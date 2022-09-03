@@ -7,7 +7,13 @@ import { loginValidation, registerValiddation } from './validations/auth.js'
 import { createValidation } from './validations/post.js'
 
 import { getMe, login, register } from './controllers/UserController.js'
-import { create, getAll } from './controllers/PostController.js'
+import {
+  create,
+  deleteOne,
+  getAll,
+  getOne,
+  update,
+} from './controllers/PostController.js'
 
 const PORT = 8888
 
@@ -26,8 +32,11 @@ app.post('/auth/login', loginValidation, login)
 app.post('/auth/register', registerValiddation, register)
 app.get('/auth/me', checkAuth, getMe)
 
-app.post('/posts', checkAuth, createValidation, create)
 app.get('/posts', getAll)
+app.get('/posts/:id', getOne)
+app.post('/posts', checkAuth, createValidation, create)
+app.patch('/posts/:id', checkAuth, update)
+app.delete('/posts/:id', checkAuth, deleteOne)
 
 app.listen(PORT, (err) => {
   if (err) {
