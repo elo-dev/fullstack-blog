@@ -1,19 +1,13 @@
 import express from 'express'
 import mongoose from 'mongoose'
+import multer from 'multer'
 
-import checkAuth from './utils/checkAuth.js'
+import { checkAuth, handleValidationError } from './utils'
 
 import { loginValidation, registerValiddation } from './validations/auth.js'
 import { createValidation } from './validations/post.js'
 
-import { getMe, login, register } from './controllers/UserController.js'
-import {
-  create,
-  deleteOne,
-  getAll,
-  getOne,
-  update,
-} from './controllers/PostController.js'
+import { UserController, PostController } from './controllers'
 
 const PORT = 8888
 
@@ -26,17 +20,57 @@ mongoose
 
 const app = express()
 
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, 'uploads')
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname)
+  },
+})
+
+const upload = multer({ storage })
+
 app.use(express.json())
+app.use('/uploads', express.static('uploads'))
 
-app.post('/auth/login', loginValidation, login)
-app.post('/auth/register', registerValiddation, register)
-app.get('/auth/me', checkAuth, getMe)
+app.post(
+  '/auth/login',
+  loginValidation,
+  handleValidationError,
+  UserController.login
+)
+app.post(
+  '/auth/register',
+  registerValiddation,
+  handleValidationError,
+  UserController.register
+)
+app.get('/auth/me', checkAuth, UserController.getMe)
 
-app.get('/posts', getAll)
-app.get('/posts/:id', getOne)
-app.post('/posts', checkAuth, createValidation, create)
-app.patch('/posts/:id', checkAuth, update)
-app.delete('/posts/:id', checkAuth, deleteOne)
+app.get('/posts', PostController.getAll)
+app.get('/posts/:id', PostController.getOne)
+app.post(
+  '/posts',
+  checkAuth,
+  createValidation,
+  handleValidationError,
+  PostController.create
+)
+app.patch(
+  '/posts/:id',
+  checkAuth,
+  createValidation,
+  handleValidationError,
+  PostController.update
+)
+app.delete('/posts/:id', checkAuth, PostController.deleteOne)
+
+app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+  res.status(200).json({
+    url: `/uploads/${req.file.originalname}`,
+  })
+})
 
 app.listen(PORT, (err) => {
   if (err) {
