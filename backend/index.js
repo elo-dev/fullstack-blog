@@ -2,12 +2,12 @@ import express from 'express'
 import mongoose from 'mongoose'
 import multer from 'multer'
 
-import { checkAuth, handleValidationError } from './utils'
+import { checkAuth, handleValidationError } from './utils/index.js'
 
 import { loginValidation, registerValiddation } from './validations/auth.js'
 import { createValidation } from './validations/post.js'
 
-import { UserController, PostController } from './controllers'
+import { UserController, PostController } from './controllers/index.js'
 
 const PORT = 8888
 

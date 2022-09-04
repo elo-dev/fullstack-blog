@@ -7,6 +7,6 @@ export const createValidation = [
   body('text', 'Статья должна содержать минимум 10 символов')
     .isLength({ min: 10 })
     .isString(),
-  body('tags', 'Неверный формат тегов').optional().isString(),
+  body('tags', 'Неверный формат тегов').optional().isArray(),
   body('imageUrl', 'Неверная ссылка изображение').optional().isString(),
 ]
