@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "built",
+    "baseUrl": "src",
+    "sourceMap": true,
+    "allowJs": true,
+    "target": "es5",
+    "module": "ES6",
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node"
+  },
+  "exclude": ["node_modules", "babel.config.js", "postcss.config.js"]
+}

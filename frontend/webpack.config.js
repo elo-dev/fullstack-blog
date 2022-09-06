@@ -1,7 +1,6 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 let mode = 'development'
 
@@ -10,15 +9,15 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.tsx',
+  mode,
 
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
     assetModuleFilename: 'images/[hash][ext][query]',
+    clean: true,
   },
-
-  mode: mode,
 
   devServer: {
     port: 3000,
@@ -32,35 +31,45 @@ module.exports = {
         type: 'asset/resource',
       },
       {
-        test: /\.(s[ac]|c)ss$/i,
+        test: /\.scss$/,
         use: [
+          MiniCssExtractPlugin.loader,
           {
-            loader: MiniCssExtractPlugin.loader,
-            options: { publicPath: '' },
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              modules: {
+                localIdentName: '[path]_[name]_[local]',
+              },
+            },
           },
-          'css-loader',
           'postcss-loader',
           'sass-loader',
         ],
       },
       {
-        test: /\.jsx?$/,
+        test: /\.css$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { importLoaders: 1 } },
+          { loader: 'postcss-loader' },
+        ],
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
-        use: { loader: 'babel-loader' },
       },
     ],
   },
 
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.tsx', 'ts', '.js', '.jsx', '.css', '.scss'],
   },
 
   plugins: [
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin(),
-    new HTMLWebpackPlugin({
-      template: './public/index.html',
-    }),
+    new HTMLWebpackPlugin({ template: './public/index.html' }),
   ],
 
   devtool: 'source-map',
