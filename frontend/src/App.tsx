@@ -1,8 +1,15 @@
+import Layout from './components/Layout'
+import Header from './components/Header/Header'
+import Filters from './components/Filters/Filters'
+import Posts from './components/Posts/Posts'
+
 const App = () => {
   return (
-    <div>
-      <h1 className="text-orange-500">Hello world</h1>
-    </div>
+    <Layout>
+      <Header />
+      <Filters />
+      <Posts />
+    </Layout>
   )
 }
 

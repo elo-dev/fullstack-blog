@@ -12,9 +12,11 @@
   "author": "Dmitriy Frolov",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/line-clamp": "^0.4.2",
     "axios": "^0.27.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.4.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0"
   },
@@ -34,6 +36,8 @@
     "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.8.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-tailwindcss": "^0.1.13",
     "sass": "^1.54.8",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",
