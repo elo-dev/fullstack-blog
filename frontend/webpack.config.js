@@ -1,6 +1,7 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 let mode = 'development'
 
@@ -13,21 +14,27 @@ module.exports = {
   mode,
 
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name][contenthash].js',
+    publicPath: '/',
     assetModuleFilename: 'images/[hash][ext][query]',
     clean: true,
   },
 
   devServer: {
+    static: {
+      directory: path.resolve(__dirname, 'public'),
+    },
     port: 3000,
     hot: true,
+    compress: true,
+    historyApiFallback: true,
   },
 
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|svg)$/i,
+        test: /\.(png|jpe?g|svg|gif)$/i,
         type: 'asset/resource',
       },
       {
@@ -69,7 +76,13 @@ module.exports = {
 
   plugins: [
     new MiniCssExtractPlugin(),
-    new HTMLWebpackPlugin({ template: './public/index.html' }),
+    new HTMLWebpackPlugin({
+      title: 'webpack Boilerplate',
+      filename: 'index.html',
+      template: path.resolve(__dirname, 'public/index.html'),
+      favicon: path.resolve(__dirname, 'public/favicon.ico'),
+    }),
+    new ReactRefreshPlugin(),
   ],
 
   devtool: 'source-map',

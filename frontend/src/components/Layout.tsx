@@ -1,11 +1,11 @@
-type Props = {
-  children: React.ReactNode
-}
+import { Outlet } from 'react-router'
+import Header from '../components/Header/Header'
 
-const Layout: React.FC<Props> = ({ children }) => {
+const Layout = () => {
   return (
-    <div className="container max-w-full mx-auto px-7">
-      {children}
+    <div className="container mx-auto max-w-full px-7">
+      <Header />
+      <Outlet />
     </div>
   )
 }

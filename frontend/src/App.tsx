@@ -1,15 +1,18 @@
+import { Route, Routes } from 'react-router'
+
 import Layout from './components/Layout'
-import Header from './components/Header/Header'
-import Filters from './components/Filters/Filters'
-import Posts from './components/Posts/Posts'
+import HomePage from './pages/HomePage/HomePage'
+import ArticlePage from './pages/ArticlePage/ArticlePage'
 
 const App = () => {
   return (
-    <Layout>
-      <Header />
-      <Filters />
-      <Posts />
-    </Layout>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="post/:id" element={<ArticlePage />} />
+        <Route path="*" element={<p>Not found</p>} />
+      </Route>
+    </Routes>
   )
 }
 
