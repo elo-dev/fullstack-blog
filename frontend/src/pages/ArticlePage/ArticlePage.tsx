@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import axios from '../../axios'
+import { instance } from '../../instance'
 
 import { PostItem } from 'types/Post'
 
@@ -15,7 +15,7 @@ const ArticlePage = () => {
   const { id } = useParams()
 
   useEffect(() => {
-    axios
+    instance
       .get<PostItem>(`/posts/${id}`)
       .then((res) => {
         setPost(res.data)

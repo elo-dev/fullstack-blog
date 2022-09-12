@@ -14,7 +14,7 @@ export type PostItem = {
   tags: string[]
 }
 
-export type Posts = {
+export type PostState = {
   posts: {
     items: PostItem[]
     loading: boolean

@@ -9,7 +9,7 @@ const Back = () => {
       className="inline-flex cursor-pointer items-center hover:text-cyan-500"
       onClick={() => navigate(-1)}
     >
-      <IoIosArrowBack className="text-2xl" /> Back
+      <IoIosArrowBack className="text-2xl" /> Назад
     </div>
   )
 }

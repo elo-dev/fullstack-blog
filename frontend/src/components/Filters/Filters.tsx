@@ -2,14 +2,14 @@ const Filters = () => {
   return (
     <div className="my-10">
       <ul className="flex gap-3 uppercase">
-        <li className="font-medium cursor-pointer hover:text-sky-500 hover:underline underline-offset-8">
-          new
+        <li className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline">
+          новые
         </li>
-        <li className="font-medium cursor-pointer hover:text-sky-500 hover:underline underline-offset-8">
-          most popular
+        <li className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline">
+          популярные
         </li>
-        <li className="font-medium cursor-pointer hover:text-sky-500 hover:underline underline-offset-8">
-          friend
+        <li className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline">
+          Друзья
         </li>
       </ul>
     </div>
