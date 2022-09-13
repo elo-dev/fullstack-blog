@@ -33,9 +33,7 @@ export const register = async (req, res) => {
     return res.status(200).json({ ...userData, token })
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      message: 'Не удалось зарегистрироваться',
-    })
+    res.status(500).json([{ message: 'Не удалось зарегистрироваться' }])
   }
 }
 
@@ -46,7 +44,7 @@ export const login = async (req, res) => {
       .exec()
 
     if (!user)
-      return res.status(404).json({ message: 'Пользователь не найден' })
+      return res.status(404).json([{ message: 'Пользователь не найден' }])
 
     const isValidPass = await bcrypt.compare(
       req.body.password,
@@ -54,9 +52,11 @@ export const login = async (req, res) => {
     )
 
     if (!isValidPass)
-      return res.status(400).json({
-        message: 'Неверный логин или пароль',
-      })
+      return res.status(400).json([
+        {
+          message: 'Неверный логин или пароль',
+        },
+      ])
 
     const token = jwt.sign(
       {
@@ -73,9 +73,11 @@ export const login = async (req, res) => {
     return res.json({ ...userData, token })
   } catch (error) {
     console.log(error)
-    res.status(500).json({
-      message: 'Не удалось авторизоваться',
-    })
+    res.status(500).json([
+      {
+        message: 'Не удалось авторизоваться',
+      },
+    ])
   }
 }
 
@@ -84,9 +86,11 @@ export const getMe = async (req, res) => {
     const user = await UserModel.findById(req.userId)
 
     if (!user)
-      return res.status(404).json({
-        message: 'Пользователь не найден',
-      })
+      return res.status(404).json([
+        {
+          message: 'Пользователь не найден',
+        },
+      ])
 
     const { passwordHash, ...userData } = user._doc
 
