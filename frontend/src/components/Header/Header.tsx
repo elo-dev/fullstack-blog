@@ -50,9 +50,12 @@ const Header = () => {
                     isOpen ? 'visible opacity-100' : 'invisible opacity-0'
                   }`}
                 >
-                  <li className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500">
+                  <Link
+                    to={'create-post'}
+                    className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500"
+                  >
                     Создать статью
-                  </li>
+                  </Link>
                   <li
                     onClick={onClickLogout}
                     className="flex cursor-pointer items-center justify-center px-2 py-1 hover:bg-slate-100 hover:text-red-500"

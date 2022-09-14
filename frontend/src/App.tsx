@@ -6,6 +6,7 @@ import ArticlePage from './pages/ArticlePage/ArticlePage'
 import Auth from './pages/Auth'
 import LoginPage from './pages/Auth/LoginPage/LoginPage'
 import RegistrationPage from './pages/Auth/RegistrationPage/RegistrationPage'
+import MarkdownEditor from './pages/MarkdownEditor/MarkdownEditor'
 
 import Layout from './components/Layout'
 
@@ -24,6 +25,7 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="post/:id" element={<ArticlePage />} />
+        <Route path="create-post" element={<MarkdownEditor />} />
         <Route path="auth" element={<Auth />}>
           <Route index element={<LoginPage />} />
           <Route path="registration" element={<RegistrationPage />} />

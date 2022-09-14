@@ -7,10 +7,12 @@ import { PostItem } from 'types/Post'
 import Loader from '../../components/Loader/Loader'
 import Article from '../../components/Article/Article'
 import Back from '../../components/Back/Back'
+import { useAppSelector } from '../../hooks'
 
 const ArticlePage = () => {
   const [post, setPost] = useState<PostItem>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const { user } = useAppSelector((state) => state.auth)
 
   const { id } = useParams()
 
@@ -31,7 +33,7 @@ const ArticlePage = () => {
       <div className="mb-5">
         <Back />
       </div>
-      <Article {...post} />
+      <Article {...post} isEditable={post?.author._id === user?._id} />
     </div>
   )
 }

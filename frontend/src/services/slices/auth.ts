@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { RootState } from '../index'
 import { instance } from '../../instance'
 import { AuthState, Login, Register } from '../../types/Auth'
@@ -18,8 +18,10 @@ export const fetchLogin = createAsyncThunk(
 )
 
 export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
-  const { data } = await instance.get<Me>('/auth/me')
-  return data
+  try {
+    const { data } = await instance.get<Me>('/auth/me')
+    return data
+  } catch (error) {}
 })
 
 export const fetchRegister = createAsyncThunk(
@@ -51,51 +53,38 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchLogin.pending, (state) => {
-        state.loading = true
-        state.user = null
-        state.error = null
-      })
-      .addCase(fetchLogin.fulfilled, (state, action) => {
-        state.loading = false
-        state.user = action.payload
-        state.error = null
-      })
-      .addCase(fetchLogin.rejected, (state, action: any) => {
-        state.loading = false
-        state.user = null
-        state.error = action.payload
-      })
-      .addCase(fetchAuthMe.pending, (state) => {
-        state.loading = true
-        state.user = null
-        state.error = null
-      })
-      .addCase(fetchAuthMe.fulfilled, (state, action) => {
-        state.loading = false
-        state.user = action.payload
-        state.error = null
-      })
-      .addCase(fetchAuthMe.rejected, (state, action: any) => {
-        state.loading = false
-        state.user = null
-        state.error = action.payload
-      })
-      .addCase(fetchRegister.pending, (state) => {
-        state.loading = true
-        state.user = null
-        state.error = null
-      })
-      .addCase(fetchRegister.fulfilled, (state, action) => {
-        state.loading = false
-        state.user = action.payload
-        state.error = null
-      })
-      .addCase(fetchRegister.rejected, (state, action: any) => {
-        state.loading = false
-        state.user = null
-        state.error = action.payload
-      })
+      .addMatcher(
+        isAnyOf(fetchLogin.pending, fetchAuthMe.pending, fetchRegister.pending),
+        (state) => {
+          state.loading = true
+          state.user = null
+          state.error = null
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchLogin.fulfilled,
+          fetchAuthMe.fulfilled,
+          fetchRegister.fulfilled
+        ),
+        (state, { payload }) => {
+          state.loading = false
+          state.user = payload
+          state.error = null
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchLogin.rejected,
+          fetchAuthMe.rejected,
+          fetchRegister.rejected
+        ),
+        (state, { payload }: any) => {
+          state.loading = false
+          state.user = null
+          state.error = payload
+        }
+      )
   },
 })
 
