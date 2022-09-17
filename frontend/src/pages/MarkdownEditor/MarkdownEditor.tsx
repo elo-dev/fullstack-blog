@@ -135,7 +135,11 @@ const MarkdownEditor = () => {
         </div>
         {imageUrl && (
           <img
-            src={`http://localhost:8888${imageUrl}`}
+            src={`${
+              process.env.REACT_APP_API_URL
+                ? process.env.REACT_APP_API_URL
+                : 'http://localhost:8888'
+            }${imageUrl}`}
             alt="preview"
             className="my-10 w-40 object-contain"
           />

@@ -2,6 +2,7 @@ const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const { EnvironmentPlugin } = require('webpack')
 
 let mode = 'development'
 
@@ -14,7 +15,7 @@ module.exports = {
   mode,
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'build'),
     filename: '[name][contenthash].js',
     publicPath: '/',
     assetModuleFilename: 'images/[hash][ext][query]',
@@ -83,6 +84,9 @@ module.exports = {
       favicon: path.resolve(__dirname, 'public/favicon.ico'),
     }),
     new ReactRefreshPlugin(),
+    new EnvironmentPlugin({
+      REACT_APP_API_URL: 'https://blog-mern-frolov.herokuapp.com',
+    }),
   ],
 
   devtool: 'source-map',

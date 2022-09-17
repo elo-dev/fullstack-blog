@@ -27,7 +27,11 @@ const Posts = ({
         <div className="h-[300px]">
           {imageUrl ? (
             <img
-              src={`http://localhost:8888${imageUrl}`}
+              src={`${
+                process.env.REACT_APP_API_URL
+                  ? process.env.REACT_APP_API_URL
+                  : 'http://localhost:8888'
+              }${imageUrl}`}
               alt={title}
               className="h-full w-full rounded-xl object-cover"
             />

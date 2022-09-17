@@ -24,7 +24,15 @@ const Article = ({
   return (
     <div key={_id} className="overflow-hidden rounded-t-lg bg-white">
       <img
-        src={imageUrl ? `http://localhost:8888${imageUrl}` : null}
+        src={
+          imageUrl
+            ? `${
+                process.env.REACT_APP_API_URL
+                  ? process.env.REACT_APP_API_URL
+                  : 'http://localhost:8888'
+              }${imageUrl}`
+            : null
+        }
         alt={imageUrl ? title : null}
         className="max-h-[450px] w-full object-cover"
       />

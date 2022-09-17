@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start-server": "node index.js",
+    "start": "node index.js",
     "dev-server": "nodemon index.js"
   },
   "author": "Dmitriy Frolov",
