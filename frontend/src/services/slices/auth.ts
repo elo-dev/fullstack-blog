@@ -40,7 +40,7 @@ export const fetchRegister = createAsyncThunk(
 const initialState: AuthState = {
   user: null,
   loading: true,
-  error: null,
+  error: [],
 }
 
 const authSlice = createSlice({
@@ -58,7 +58,7 @@ const authSlice = createSlice({
         (state) => {
           state.loading = true
           state.user = null
-          state.error = null
+          state.error = []
         }
       )
       .addMatcher(
@@ -70,7 +70,7 @@ const authSlice = createSlice({
         (state, { payload }) => {
           state.loading = false
           state.user = payload
-          state.error = null
+          state.error = []
         }
       )
       .addMatcher(

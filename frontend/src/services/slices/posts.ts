@@ -7,11 +7,19 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   return data
 })
 
+export const fetchDeletePost = createAsyncThunk(
+  'posts/fetchDeletePost',
+  async (id: string) => {
+    await instance.delete(`/posts/${id}`)
+    return id
+  }
+)
+
 const initialState: PostState = {
   posts: {
     items: [],
     loading: true,
-    error: false,
+    error: [],
   },
 }
 
@@ -22,19 +30,24 @@ const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchPosts.pending, (state) => {
-        state.posts.items = []
         state.posts.loading = true
-        state.posts.error = false
+        state.posts.items = []
+        state.posts.error = []
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.posts.loading = false
         state.posts.items = action.payload
-        state.posts.loading = false
-        state.posts.error = false
+        state.posts.error = []
       })
-      .addCase(fetchPosts.rejected, (state) => {
-        state.posts.items = []
+      .addCase(fetchPosts.rejected, (state, action: any) => {
         state.posts.loading = false
-        state.posts.error = true
+        state.posts.items = []
+        state.posts.error = action.payload
+      })
+      .addCase(fetchDeletePost.fulfilled, (state, action) => {
+        state.posts.items = state.posts.items.filter(
+          (obj) => obj._id !== action.meta.arg
+        )
       })
   },
 })

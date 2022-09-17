@@ -1,10 +1,7 @@
 import { User } from './User'
 
 type Error = {
-  value: string
   message: string
-  param: string
-  location: string
 }
 
 export type Register = {

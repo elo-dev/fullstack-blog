@@ -12,7 +12,7 @@ export interface PostItem extends ArticleProps {
   author: Author
   text: string
   imageUrl: string
-  createdAt: string
+  createdAt: Date
   viewsCount: number
   tags: string[]
 }
@@ -21,6 +21,6 @@ export type PostState = {
   posts: {
     items: PostItem[]
     loading: boolean
-    error: boolean
+    error: string[]
   }
 }

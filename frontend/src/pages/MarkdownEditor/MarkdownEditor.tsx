@@ -1,4 +1,11 @@
-import { ChangeEvent, useCallback, useMemo, useRef, useState } from 'react'
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { Navigate } from 'react-router'
 import MDEditor from 'react-simplemde-editor'
 
@@ -17,6 +24,8 @@ const MarkdownEditor = () => {
   const [tags, setTags] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [submitError, setSubmitError] = useState([])
+  const [isSuccess, setIsSuccess] = useState(false)
   const inputFileRef = useRef(null)
 
   const onChange = useCallback((value: string) => {
@@ -45,19 +54,30 @@ const MarkdownEditor = () => {
       const fields = {
         title,
         imageUrl,
-        tags: tags.split(','),
+        tags,
         text,
       }
       await instance.post('/posts', fields)
+      setIsSuccess(true)
       setImageUrl('')
       setIsLoading(false)
       setTags('')
       setText('')
       setTitle('')
+      setSubmitError([])
     } catch (error) {
-      console.log(error)
+      setSubmitError(error.response.data)
+      setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    const unsub = setTimeout(() => {
+      setIsSuccess(false)
+    }, 3000)
+
+    return () => clearTimeout(unsub)
+  }, [isSuccess])
 
   const options: any = useMemo(
     () => ({
@@ -122,17 +142,28 @@ const MarkdownEditor = () => {
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             type="text"
-            placeholder="Теги"
+            placeholder="Теги через пробел"
             className="border-b border-slate-500 bg-transparent pb-1 placeholder-sky-500 placeholder:font-medium focus:outline-none"
           />
         </div>
         <MDEditor value={text} onChange={onChange} options={options} />
         <button
+          disabled={isLoading}
           type={'submit'}
-          className="rounded-sm bg-sky-500 px-5 py-2 text-white hover:opacity-80 active:bg-sky-700"
+          className="rounded-sm bg-sky-500 px-5 py-2 text-white hover:opacity-80 active:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80"
         >
           Опубликовать
         </button>
+        <div className="mt-3">
+          {submitError.map(({ message }, index) => (
+            <p key={index} className="text-red-500">
+              {message}
+            </p>
+          ))}
+          {isSuccess && (
+            <p className="font-medium text-green-500">Статья опубликована</p>
+          )}
+        </div>
       </form>
     </>
   )

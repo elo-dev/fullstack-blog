@@ -4,6 +4,8 @@ import { MdDelete, MdEdit } from 'react-icons/md'
 
 import { PostItem } from '../../types/Post'
 
+import { timeTransform } from '../../utilts/timeTransform'
+
 const Article = ({
   _id,
   author,
@@ -14,12 +16,15 @@ const Article = ({
   imageUrl,
   viewsCount,
   isEditable,
+  onRemoveArticle,
 }: PostItem) => {
+  const { createdDate, isCreatedToday, todayTime } = timeTransform(createdAt)
+
   return (
     <div key={_id} className="overflow-hidden rounded-t-lg bg-white">
       <img
-        src={`http://localhost:8888${imageUrl}`}
-        alt={title}
+        src={imageUrl ? `http://localhost:8888${imageUrl}` : null}
+        alt={imageUrl ? title : null}
         className="max-h-[450px] w-full object-cover"
       />
       <div className="py-5">
@@ -31,7 +36,9 @@ const Article = ({
           />
           <div>
             <p>{author.fullname}</p>
-            <p className="text-slate-400">{createdAt}</p>
+            <p className="text-slate-400">
+              {isCreatedToday ? todayTime : createdDate}
+            </p>
           </div>
         </div>
         <div className="flex justify-between px-10">
@@ -62,6 +69,7 @@ const Article = ({
               <MdDelete
                 size="25"
                 className="cursor-pointer hover:text-red-500"
+                onClick={() => onRemoveArticle(_id)}
               />
             </div>
           )}
