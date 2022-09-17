@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { IoIosNotifications, IoIosArrowDown, IoIosSearch } from 'react-icons/io'
@@ -8,6 +8,7 @@ import { logout, selectIsAuth } from '../../services/slices/auth'
 const Header = () => {
   const isAuth = useAppSelector(selectIsAuth)
   const user = useAppSelector((state) => state.auth.user)
+  const rootEl = useRef(null)
 
   const dispatch = useAppDispatch()
 
@@ -19,9 +20,23 @@ const Header = () => {
     setIsOpen(false)
   }
 
+  useEffect(() => {
+    if (isOpen) return
+
+    const onClick = (e) => {
+      if (!rootEl.current) return
+      if (!rootEl.current.contains(e.target)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('click', onClick)
+    return () => removeEventListener('click', onClick)
+  }, [isOpen])
+
   return (
-    <div className="flex items-center justify-between py-5">
-      <div className="flex w-[50%] items-center rounded-full border border-sky-500 bg-slate-200 px-2 transition duration-100 ease-in-out focus-within:border-sky-600 focus-within:bg-white">
+    <div className="flex items-center justify-between py-5 md:flex-col md:gap-5">
+      <div className="flex w-[50%] items-center rounded-full border border-sky-500 bg-slate-200 px-2 transition duration-100 ease-in-out focus-within:border-sky-600 focus-within:bg-white sm:w-full">
         <IoIosSearch size="25" />
         <input
           type="text"
@@ -40,7 +55,7 @@ const Header = () => {
               <p className="cursor-pointer hover:text-sky-500">
                 {isAuth && user.fullname}
               </p>
-              <nav className="relative">
+              <nav className="relative" ref={rootEl}>
                 <IoIosArrowDown
                   onClick={() => setIsOpen(!isOpen)}
                   className="cursor-pointer hover:text-sky-500"
@@ -53,6 +68,7 @@ const Header = () => {
                   <Link
                     to={'create-post'}
                     className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500"
+                    onClick={() => setIsOpen((prevState) => !prevState)}
                   >
                     Создать статью
                   </Link>

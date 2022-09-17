@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Navigate } from 'react-router'
+import { Navigate, useParams } from 'react-router'
 import MDEditor from 'react-simplemde-editor'
 
 import Back from '../../components/Back/Back'
@@ -15,9 +15,12 @@ import { instance } from '../../instance'
 import { useAppSelector } from '../../hooks'
 import { selectIsAuth } from '../../services/slices/auth'
 
+import { PostItem } from '../../types/Post'
+
 import 'easymde/dist/easymde.min.css'
 
 const MarkdownEditor = () => {
+  const { id } = useParams()
   const isAuth = useAppSelector(selectIsAuth)
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
@@ -27,9 +30,21 @@ const MarkdownEditor = () => {
   const [submitError, setSubmitError] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)
   const inputFileRef = useRef(null)
+  const isEditing = Boolean(id)
 
   const onChange = useCallback((value: string) => {
     setText(value)
+  }, [])
+
+  useEffect(() => {
+    if (id) {
+      instance.get<PostItem>(`/posts/${id}`).then((res) => {
+        setTitle(res.data.title)
+        setText(res.data.text)
+        setImageUrl(res.data.imageUrl)
+        setTags(res.data.tags.join(' '))
+      })
+    }
   }, [])
 
   const handleChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +72,9 @@ const MarkdownEditor = () => {
         tags,
         text,
       }
-      await instance.post('/posts', fields)
+      isEditing
+        ? await instance.patch(`/posts/${id}`, fields)
+        : await instance.post('/posts', fields)
       setIsSuccess(true)
       setImageUrl('')
       setIsLoading(false)
@@ -152,7 +169,7 @@ const MarkdownEditor = () => {
           type={'submit'}
           className="rounded-sm bg-sky-500 px-5 py-2 text-white hover:opacity-80 active:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80"
         >
-          Опубликовать
+          {isEditing ? 'Сохранить' : 'Опубликовать'}
         </button>
         <div className="mt-3">
           {submitError.map(({ message }, index) => (
@@ -161,7 +178,9 @@ const MarkdownEditor = () => {
             </p>
           ))}
           {isSuccess && (
-            <p className="font-medium text-green-500">Статья опубликована</p>
+            <p className="font-medium text-green-500">
+              {isEditing ? 'Статья обновлена' : 'Статья опубликована'}
+            </p>
           )}
         </div>
       </form>

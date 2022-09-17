@@ -14,7 +14,7 @@ export interface PostItem extends ArticleProps {
   imageUrl: string
   createdAt: Date
   viewsCount: number
-  tags: string[]
+  tags?: string[]
 }
 
 export type PostState = {

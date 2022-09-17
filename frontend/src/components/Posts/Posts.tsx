@@ -68,7 +68,7 @@ const Posts = ({
             className="line-clamp-2 font-medium text-slate-500"
           />
           <ul className="line-clamp-1">
-            {tags.map((tag, index) => (
+            {tags?.map((tag, index) => (
               <li
                 key={index}
                 className="mr-2 inline-block font-medium text-slate-400"

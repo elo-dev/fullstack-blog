@@ -19,6 +19,7 @@ const ArticlePage = () => {
   const dispatch = useAppDispatch()
   const { user } = useAppSelector((state) => state.auth)
   const navigate = useNavigate()
+  const { id } = useParams()
 
   const onRemoveArticle = async (id: string) => {
     try {
@@ -28,8 +29,6 @@ const ArticlePage = () => {
       console.log(error)
     }
   }
-
-  const { id } = useParams()
 
   useEffect(() => {
     instance

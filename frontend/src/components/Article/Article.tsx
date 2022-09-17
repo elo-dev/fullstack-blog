@@ -1,4 +1,5 @@
 import { IoIosEye } from 'react-icons/io'
+import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import { MdDelete, MdEdit } from 'react-icons/md'
 
@@ -45,7 +46,7 @@ const Article = ({
           <div>
             <h1 className="my-5 text-5xl font-semibold">{title}</h1>
             <ul>
-              {tags.map((tag, index) => (
+              {tags?.map((tag, index) => (
                 <li
                   key={index}
                   className="mr-2 inline-block text-slate-400 last:mr-0"
@@ -65,7 +66,12 @@ const Article = ({
           </div>
           {isEditable && (
             <div className="flex items-end gap-x-3">
-              <MdEdit size="25" className="cursor-pointer hover:text-sky-500" />
+              <Link to={`/post/${_id}/edit`}>
+                <MdEdit
+                  size="25"
+                  className="cursor-pointer hover:text-sky-500"
+                />
+              </Link>
               <MdDelete
                 size="25"
                 className="cursor-pointer hover:text-red-500"

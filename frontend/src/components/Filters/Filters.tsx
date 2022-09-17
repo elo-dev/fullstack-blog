@@ -1,7 +1,7 @@
 const Filters = () => {
   return (
     <div className="my-10">
-      <ul className="flex gap-3 uppercase">
+      <ul className="flex gap-3 uppercase md:justify-center">
         <li className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline">
           новые
         </li>

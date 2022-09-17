@@ -26,6 +26,7 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="post/:id" element={<ArticlePage />} />
+        <Route path="post/:id/edit" element={<MarkdownEditor />} />
         <Route path="create-post" element={<MarkdownEditor />} />
         <Route path="auth" element={<Auth />}>
           <Route index element={<LoginPage />} />
