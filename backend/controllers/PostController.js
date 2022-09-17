@@ -5,7 +5,7 @@ export const create = async (req, res) => {
     const doc = new PostModel({
       title: req.body.title,
       text: req.body.text,
-      tags: req.body.tags,
+      tags: req.body.tags.match(/\S+/g),
       imageUrl: req.body.imageUrl,
       author: req.userId,
     })
@@ -14,8 +14,7 @@ export const create = async (req, res) => {
 
     res.status(200).json(post)
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: 'Не удалось создать статью' })
+    res.status(500).json([{ message: 'Не удалось создать статью' }])
   }
 }
 
@@ -25,8 +24,7 @@ export const getAll = async (req, res) => {
 
     res.json(posts)
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: 'Не удалось получить статьи' })
+    res.status(500).json([{ message: 'Не удалось получить статьи' }])
   }
 }
 
@@ -45,19 +43,20 @@ export const getOne = async (req, res) => {
       (err, doc) => {
         if (err) {
           console.log(err)
-          return res.status(500).json({ message: 'Не удалось получить статью' })
+          return res
+            .status(500)
+            .json([{ message: 'Не удалось получить статью' }])
         }
 
         if (!doc) {
-          return res.status(404).json({ message: 'Статья не найдена' })
+          return res.status(404).json([{ message: 'Статья не найдена' }])
         }
 
         res.status(200).json(doc)
       }
-    )
+    ).populate('author')
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: 'Не удалось получить статью' })
+    res.status(500).json([{ message: 'Не удалось получить статью' }])
   }
 }
 
@@ -73,19 +72,18 @@ export const deleteOne = async (req, res) => {
       (err, doc) => {
         if (err) {
           console.log(err)
-          res.status(500).json({ message: 'Не удалось удалить статью' })
+          res.status(500).json([{ message: 'Не удалось удалить статью' }])
         }
 
         if (!doc) {
-          return res.status(404).json({ message: 'Статья не найдена' })
+          return res.status(404).json([{ message: 'Статья не найдена' }])
         }
 
         res.status(200).json({ success: true })
       }
     )
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: 'Не удалось удалить статью' })
+    res.status(500).json([{ message: 'Не удалось удалить статью' }])
   }
 }
 
@@ -108,7 +106,6 @@ export const update = async (req, res) => {
 
     res.status(200).json({ success: true })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: 'Не удалось обновить статью' })
+    res.status(500).json([{ message: 'Не удалось обновить статью' }])
   }
 }
