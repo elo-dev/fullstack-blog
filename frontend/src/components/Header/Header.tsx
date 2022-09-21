@@ -35,7 +35,7 @@ const Header = () => {
   }, [isOpen])
 
   return (
-    <div className="flex items-center justify-between py-5 md:flex-col md:gap-5">
+    <div className="flex items-center justify-between py-5 md:flex-col space-y-5">
       <div className="flex w-[50%] items-center rounded-full border border-sky-500 bg-slate-200 px-2 transition duration-100 ease-in-out focus-within:border-sky-600 focus-within:bg-white sm:w-full">
         <IoIosSearch size="25" />
         <input
@@ -51,7 +51,7 @@ const Header = () => {
               className="h-[40px] w-[40px] cursor-pointer rounded-[50%] object-cover hover:outline hover:outline-sky-500"
               src="https://images.unsplash.com/photo-1662401208927-0b71a8635a84?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
             />
-            <div className="flex items-center gap-x-1">
+            <div className="flex items-center space-x-1">
               <p className="cursor-pointer hover:text-sky-500">
                 {isAuth && user.fullname}
               </p>

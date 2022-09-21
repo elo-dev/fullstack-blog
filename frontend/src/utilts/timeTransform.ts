@@ -4,7 +4,9 @@ export const timeTransform = (createdAt: Date) => {
   const createdTime = new Date(createdAt)
   const createdHour = createdTime.getHours()
   const createdMin = createdTime.getMinutes()
-  const todayTime = `${createdHour}:${createdMin}`
+  const todayTime = `${createdHour}:${
+    createdMin < 10 ? `0${createdMin}` : createdMin
+  }`
 
   const isCreatedToday = currentDate === createdDate
 

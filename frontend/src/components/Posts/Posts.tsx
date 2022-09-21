@@ -23,15 +23,11 @@ const Posts = ({
 
   return (
     <Fragment key={_id}>
-      <div className="relative flex flex-col gap-5">
+      <div className="relative flex flex-col space-y-5">
         <div className="h-[300px]">
           {imageUrl ? (
             <img
-              src={`${
-                process.env.REACT_APP_API_URL
-                  ? process.env.REACT_APP_API_URL
-                  : 'http://localhost:8888'
-              }${imageUrl}`}
+              src={imageUrl}
               alt={title}
               className="h-full w-full rounded-xl object-cover"
             />
@@ -39,9 +35,9 @@ const Posts = ({
             <MdImageNotSupported className="h-full w-full rounded-xl object-cover text-black" />
           )}
         </div>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col space-y-5">
           <div className="flex items-center justify-between">
-            <div className="flex flex-col items-center gap-y-2 md:flex-row">
+            <div className="flex flex-col items-center space-y-2 md:flex-row">
               {author.avatarUrl ? (
                 <img
                   src={author.avatarUrl}
@@ -81,9 +77,9 @@ const Posts = ({
               </li>
             ))}
           </ul>
-          <p className="flex items-center gap-x-1 text-slate-400">
+          <p className="flex items-center space-x-1 text-slate-400">
             <IoIosEye />
-            {viewsCount}
+            <span>{viewsCount}</span>
           </p>
         </div>
       </div>

@@ -5,7 +5,7 @@ const NotFound = ({ error }: NotFoundProps) => {
   const navigate = useNavigate()
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-5">
+    <div className="flex h-screen flex-col items-center justify-center space-y-5">
       <h1 className="text-9xl font-extrabold text-sky-500 drop-shadow-md">
         {error.status}
       </h1>

@@ -5,7 +5,7 @@ export const create = async (req, res) => {
     const doc = new PostModel({
       title: req.body.title,
       text: req.body.text,
-      tags: req.body.tags.match(/\S+/g),
+      tags: req.body.tags?.match(/\S+/g),
       imageUrl: req.body.imageUrl,
       author: req.userId,
     })

@@ -1,45 +1,29 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import multer from 'multer'
 import cors from 'cors'
-import fs from 'fs'
+import dotenv from 'dotenv'
 
 import { checkAuth, handleValidationError } from './utils/index.js'
-
 import { loginValidation, registerValiddation } from './validations/auth.js'
 import { createValidation } from './validations/post.js'
-
 import { UserController, PostController } from './controllers/index.js'
+import { cloudinaryMiddleware } from './controllers/cloudinaryMiddleware.js'
+import upload from './utils/multer.js'
+
+dotenv.config()
 
 const PORT = process.env.PORT || 8888
 
 mongoose
-  .connect(
-    process.env.MONGODB_URI ||
-      'mongodb+srv://admin:D20frolov@cluster0.wd5cyty.mongodb.net/blog?retryWrites=true&w=majority'
-  )
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('Connect DB is ok'))
   .catch((err) => console.log('DB error', err))
 
 const app = express()
 
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
-    if (!fs.existsSync('uploads')) {
-      fs.mkdirSync('uploads')
-    }
-    cb(null, 'uploads')
-  },
-  filename: (_, file, cb) => {
-    cb(null, file.originalname)
-  },
-})
-
-const upload = multer({ storage })
-
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-app.use('/uploads', express.static('uploads'))
 
 app.post(
   '/auth/login',
@@ -60,24 +44,23 @@ app.get('/posts/:id', PostController.getOne)
 app.post(
   '/posts',
   checkAuth,
+  upload.single('imageUrl'),
   createValidation,
   handleValidationError,
+  cloudinaryMiddleware,
   PostController.create
 )
+
 app.patch(
   '/posts/:id',
   checkAuth,
+  upload.single('imageUrl'),
   createValidation,
   handleValidationError,
+  cloudinaryMiddleware,
   PostController.update
 )
 app.delete('/posts/:id', checkAuth, PostController.deleteOne)
-
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-  res.status(200).json({
-    url: `/uploads/${req.file.originalname}`,
-  })
-})
 
 app.listen(PORT, (err) => {
   if (err) {

@@ -25,7 +25,8 @@ const MarkdownEditor = () => {
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
   const [tags, setTags] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState<any>('')
+  const [preview, setPreview] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [submitError, setSubmitError] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)
@@ -47,35 +48,45 @@ const MarkdownEditor = () => {
     }
   }, [])
 
-  const handleChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const formData = new FormData()
-      const file = e.target.files[0]
-      formData.append('image', file)
-      const { data } = await instance.post('/upload', formData)
-      setImageUrl(data.url)
-    } catch (error) {
-      console.log(error)
+  const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const file: any = e.target.files[0]
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setPreview(reader.result as string)
     }
+    reader.readAsDataURL(file)
+    setImageUrl(file)
   }
 
-  const onClickRemoveImage = () => setImageUrl('')
+  const onClickRemoveImage = () => {
+    setPreview(null)
+    setImageUrl('')
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
     try {
+      e.preventDefault()
       setIsLoading(true)
-      const fields = {
-        title,
-        imageUrl,
-        tags,
-        text,
-      }
+      const formData = new FormData()
+      formData.append('title', title)
+      formData.append('text', text)
+      formData.append('tags', tags)
+      formData.append('imageUrl', imageUrl)
+
       isEditing
-        ? await instance.patch(`/posts/${id}`, fields)
-        : await instance.post('/posts', fields)
+        ? await instance.patch(`/posts/${id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data;',
+            },
+          })
+        : await instance.post('/posts', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data;',
+            },
+          })
+
       setIsSuccess(true)
+      setPreview(null)
       setImageUrl('')
       setIsLoading(false)
       setTags('')
@@ -115,7 +126,7 @@ const MarkdownEditor = () => {
     <>
       <Back />
       <form className="py-5" onSubmit={handleSubmit}>
-        <div className="flex gap-x-5">
+        <div className="flex space-x-5">
           <button
             type={'button'}
             onClick={() => inputFileRef.current.click()}
@@ -123,7 +134,7 @@ const MarkdownEditor = () => {
           >
             Загрузить превью
           </button>
-          {imageUrl && (
+          {(preview || imageUrl) && (
             <button
               type={'button'}
               className="rounded-sm border border-red-500 px-5 py-2 font-medium text-red-500"
@@ -133,17 +144,13 @@ const MarkdownEditor = () => {
             </button>
           )}
         </div>
-        {imageUrl && (
+        {preview || imageUrl ? (
           <img
-            src={`${
-              process.env.REACT_APP_API_URL
-                ? process.env.REACT_APP_API_URL
-                : 'http://localhost:8888'
-            }${imageUrl}`}
+            src={preview ? preview : imageUrl}
             alt="preview"
             className="my-10 w-40 object-contain"
           />
-        )}
+        ) : null}
         <input
           type={'file'}
           ref={inputFileRef}
@@ -151,7 +158,7 @@ const MarkdownEditor = () => {
           accept="image/*"
           hidden
         />
-        <div className="my-3 flex flex-col gap-y-2">
+        <div className="my-3 flex flex-col space-y-2">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}

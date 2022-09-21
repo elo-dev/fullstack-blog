@@ -24,20 +24,12 @@ const Article = ({
   return (
     <div key={_id} className="overflow-hidden rounded-t-lg bg-white">
       <img
-        src={
-          imageUrl
-            ? `${
-                process.env.REACT_APP_API_URL
-                  ? process.env.REACT_APP_API_URL
-                  : 'http://localhost:8888'
-              }${imageUrl}`
-            : null
-        }
+        src={imageUrl ? imageUrl : null}
         alt={imageUrl ? title : null}
         className="max-h-[450px] w-full object-cover"
       />
       <div className="py-5">
-        <div className="ml-10 inline-flex cursor-pointer items-center gap-x-2">
+        <div className="ml-10 inline-flex cursor-pointer items-center space-x-2">
           <img
             src="https://images.unsplash.com/photo-1662404426135-27525a4cc993?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
             alt={author.fullname}
@@ -67,13 +59,13 @@ const Article = ({
               children={text}
               className="my-5 font-medium text-slate-500"
             />
-            <p className="flex items-center gap-x-1 text-slate-400">
+            <p className="flex items-center space-x-1 text-slate-400">
               <IoIosEye />
-              {viewsCount}
+              <span>{viewsCount}</span>
             </p>
           </div>
           {isEditable && (
-            <div className="flex items-end gap-x-3">
+            <div className="flex items-end space-x-3">
               <Link to={`/post/${_id}/edit`}>
                 <MdEdit
                   size="25"
