@@ -4,20 +4,22 @@ import { instance } from '../../instance'
 
 import { PostItem } from 'types/Post'
 
+import NotFound from '../NotFound/NotFound'
+
 import Loader from '../../components/Loader/Loader'
 import Article from '../../components/Article/Article'
 import Back from '../../components/Back/Back'
+import Comments from '../../components/Comments'
 
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { fetchDeletePost } from '../../services/slices/posts'
-import NotFound from '../NotFound/NotFound'
 
 const ArticlePage = () => {
+  const dispatch = useAppDispatch()
+  const { user } = useAppSelector((state) => state.auth)
   const [post, setPost] = useState<PostItem>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
-  const dispatch = useAppDispatch()
-  const { user } = useAppSelector((state) => state.auth)
   const navigate = useNavigate()
   const { id } = useParams()
 
@@ -56,6 +58,7 @@ const ArticlePage = () => {
         isEditable={post?.author._id === user?._id}
         onRemoveArticle={onRemoveArticle}
       />
+      <Comments {...post} user={user} />
     </div>
   )
 }

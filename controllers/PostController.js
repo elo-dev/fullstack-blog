@@ -1,3 +1,5 @@
+import Comment from '../models/Comment.js'
+import Post from '../models/Post.js'
 import PostModel from '../models/Post.js'
 
 export const create = async (req, res) => {
@@ -20,7 +22,7 @@ export const create = async (req, res) => {
 
 export const getAll = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate('author').exec()
+    const posts = await PostModel.find().populate('author comments').exec()
 
     res.json(posts)
   } catch (error) {
@@ -54,7 +56,14 @@ export const getOne = async (req, res) => {
 
         res.status(200).json(doc)
       }
-    ).populate('author')
+    )
+      .populate('author comments')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'author',
+        },
+      })
   } catch (error) {
     res.status(500).json([{ message: 'Не удалось получить статью' }])
   }

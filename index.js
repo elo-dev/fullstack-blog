@@ -6,7 +6,12 @@ import dotenv from 'dotenv'
 import { checkAuth, handleValidationError } from './utils/index.js'
 import { loginValidation, registerValiddation } from './validations/auth.js'
 import { createValidation } from './validations/post.js'
-import { UserController, PostController } from './controllers/index.js'
+import { commentValidation } from './validations/comment.js'
+import {
+  UserController,
+  PostController,
+  CommentController,
+} from './controllers/index.js'
 import { cloudinaryMiddleware } from './controllers/cloudinaryMiddleware.js'
 import upload from './utils/multer.js'
 
@@ -61,6 +66,14 @@ app.patch(
   PostController.update
 )
 app.delete('/posts/:id', checkAuth, PostController.deleteOne)
+
+app.post(
+  '/posts/:id/comment',
+  checkAuth,
+  commentValidation,
+  handleValidationError,
+  CommentController.create
+)
 
 app.listen(PORT, (err) => {
   if (err) {

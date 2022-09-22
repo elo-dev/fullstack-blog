@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { IoIosNotifications, IoIosArrowDown, IoIosSearch } from 'react-icons/io'
 
 import { logout, selectIsAuth } from '../../services/slices/auth'
+import useClickOutside from '../../hooks/useClickOutside'
 
 const Header = () => {
   const isAuth = useAppSelector(selectIsAuth)
   const user = useAppSelector((state) => state.auth.user)
   const rootEl = useRef(null)
+  const { isOpen, setIsOpen } = useClickOutside(rootEl)
 
   const dispatch = useAppDispatch()
-
-  const [isOpen, setIsOpen] = useState(false)
 
   const onClickLogout = () => {
     dispatch(logout())
@@ -20,22 +20,8 @@ const Header = () => {
     setIsOpen(false)
   }
 
-  useEffect(() => {
-    if (isOpen) return
-
-    const onClick = (e) => {
-      if (!rootEl.current) return
-      if (!rootEl.current.contains(e.target)) {
-        setIsOpen(false)
-      }
-    }
-
-    document.addEventListener('click', onClick)
-    return () => removeEventListener('click', onClick)
-  }, [isOpen])
-
   return (
-    <div className="flex items-center justify-between py-5 md:flex-col space-y-5">
+    <div className="flex items-center justify-between space-y-5 py-5 md:flex-col">
       <div className="flex w-[50%] items-center rounded-full border border-sky-500 bg-slate-200 px-2 transition duration-100 ease-in-out focus-within:border-sky-600 focus-within:bg-white sm:w-full">
         <IoIosSearch size="25" />
         <input

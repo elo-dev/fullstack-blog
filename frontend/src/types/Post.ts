@@ -6,6 +6,14 @@ export type Author = {
   avatarUrl: string
 }
 
+export interface Comment {
+  _id: string
+  author: Author
+  emoji: string
+  text: string
+  createdAt: string
+}
+
 export interface PostItem extends ArticleProps {
   _id: string
   title: string
@@ -15,6 +23,7 @@ export interface PostItem extends ArticleProps {
   createdAt: Date
   viewsCount: number
   tags?: string[]
+  comments: Comment[]
 }
 
 export type PostState = {
