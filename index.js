@@ -75,6 +75,8 @@ app.post(
   CommentController.create
 )
 
+app.patch('/comment/emoji', checkAuth, CommentController.addEmoji)
+
 app.listen(PORT, (err) => {
   if (err) {
     return console.log(err)

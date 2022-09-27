@@ -6,14 +6,9 @@ import { instance } from '../../instance'
 import { PostItem } from '../../types/Post'
 
 const Comments = ({ _id, comments, user }: PostItem) => {
-  const [chosenEmoji, setChosenEmoji] = useState(null)
   const [commentText, setCommentText] = useState('')
   const [comment, setComment] = useState(comments)
   const [error, setError] = useState([])
-
-  const onEmojiClick = (event, emojiObject) => {
-    setChosenEmoji(emojiObject)
-  }
 
   const onSubmit = async (e) => {
     e.preventDefault()
@@ -65,14 +60,14 @@ const Comments = ({ _id, comments, user }: PostItem) => {
         </form>
       )}
       <div className="space-y-5">
-        {comment?.map(({ _id, author, emoji, text, createdAt }) => (
+        {comment?.map(({ _id, author, emojis, text, createdAt }) => (
           <Comment
             key={_id}
+            id={_id}
             author={author}
-            emoji={emoji}
+            emojis={emojis}
             text={text}
             createdAt={createdAt}
-            onEmojiClick={onEmojiClick}
           />
         ))}
       </div>

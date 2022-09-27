@@ -9,7 +9,7 @@ export type Author = {
 export interface Comment {
   _id: string
   author: Author
-  emoji: string
+  emojis: []
   text: string
   createdAt: string
 }
