@@ -20,7 +20,10 @@ export const create = async (req, res) => {
 
 export const getAll = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate('author comments').exec()
+    const posts = await PostModel.find()
+      .populate('author comments')
+      .sort({ createdAt: -1 })
+      .exec()
 
     res.json(posts)
   } catch (error) {
@@ -114,5 +117,31 @@ export const update = async (req, res) => {
     res.status(200).json({ success: true })
   } catch (error) {
     res.status(500).json([{ message: 'Не удалось обновить статью' }])
+  }
+}
+
+export const filterNewPost = async (req, res) => {
+  try {
+    const posts = await PostModel.find()
+      .populate('author comments')
+      .sort({ createdAt: -1 })
+      .exec()
+
+    res.status(200).json(posts)
+  } catch (error) {
+    res.status(500).json([{ message: 'Не удалось отфильтровать посты' }])
+  }
+}
+
+export const filterPopularPost = async (req, res) => {
+  try {
+    const posts = await PostModel.find()
+      .populate('author comments')
+      .sort({ viewsCount: -1 })
+      .exec()
+
+    res.status(200).json(posts)
+  } catch (error) {
+    res.status(500).json([{ message: 'Не удалось отфильтровать посты' }])
   }
 }

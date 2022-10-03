@@ -75,6 +75,9 @@ app.post(
   CommentController.create
 )
 
+app.get('/filter/new', PostController.filterNewPost)
+app.get('/filter/popular', PostController.filterPopularPost)
+
 app.patch('/comment/emoji', checkAuth, CommentController.addEmoji)
 
 app.listen(PORT, (err) => {

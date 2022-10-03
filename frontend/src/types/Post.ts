@@ -25,11 +25,3 @@ export interface PostItem extends ArticleProps {
   tags?: string[]
   comments: Comment[]
 }
-
-export type PostState = {
-  posts: {
-    items: PostItem[]
-    loading: boolean
-    error: string[]
-  }
-}

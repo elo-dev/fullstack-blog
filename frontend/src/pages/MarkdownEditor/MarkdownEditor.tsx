@@ -18,9 +18,15 @@ import { selectIsAuth } from '../../services/slices/auth'
 import { PostItem } from '../../types/Post'
 
 import 'easymde/dist/easymde.min.css'
+import {
+  useAddNewPostMutation,
+  usePatchPostMutation,
+} from '../../services/query/posts'
 
 const MarkdownEditor = () => {
   const { id } = useParams()
+  const [addNewPost] = useAddNewPostMutation()
+  const [patchPost] = usePatchPostMutation()
   const isAuth = useAppSelector(selectIsAuth)
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
@@ -74,16 +80,8 @@ const MarkdownEditor = () => {
       formData.append('imageUrl', imageUrl)
 
       isEditing
-        ? await instance.patch(`/posts/${id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data;',
-            },
-          })
-        : await instance.post('/posts', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data;',
-            },
-          })
+        ? await patchPost({ id, formData }).unwrap()
+        : await addNewPost({ formData }).unwrap()
 
       setIsSuccess(true)
       setPreview(null)

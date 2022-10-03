@@ -1,8 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { instance } from '../../instance'
-
-import { PostItem } from 'types/Post'
 
 import NotFound from '../NotFound/NotFound'
 
@@ -11,42 +8,32 @@ import Article from '../../components/Article/Article'
 import Back from '../../components/Back/Back'
 import Comments from '../../components/Comments'
 
-import { useAppDispatch, useAppSelector } from '../../hooks'
-import { fetchDeletePost } from '../../services/slices/posts'
+import { useAppSelector } from '../../hooks'
+import {
+  useDeletePostMutation,
+  useGetOnePostQuery,
+} from '../../services/query/posts'
 
 const ArticlePage = () => {
-  const dispatch = useAppDispatch()
   const { user } = useAppSelector((state) => state.auth)
-  const [post, setPost] = useState<PostItem>(null)
-  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const navigate = useNavigate()
   const { id } = useParams()
 
-  const onRemoveArticle = async (id: string) => {
+  const [deleteArticle] = useDeletePostMutation()
+  const { data: post, isLoading, error: errorPost } = useGetOnePostQuery(id)
+
+  const onDeleteArticle = async (id) => {
     try {
-      await dispatch(fetchDeletePost(id))
+      await deleteArticle(id).unwrap()
       navigate('/')
     } catch (error) {
-      console.log(error)
+      setError(error)
     }
   }
 
-  useEffect(() => {
-    instance
-      .get<PostItem>(`/posts/${id}`)
-      .then((res) => {
-        setPost(res.data)
-        setIsLoading(false)
-      })
-      .catch((error) => {
-        setError(error.response)
-        setIsLoading(false)
-      })
-  }, [])
-
   if (isLoading) return <Loader />
-  if (error) return <NotFound error={error} />
+  if (error || errorPost) return <NotFound error={error || errorPost} />
 
   return (
     <div className="my-10">
@@ -56,7 +43,7 @@ const ArticlePage = () => {
       <Article
         {...post}
         isEditable={post?.author._id === user?._id}
-        onRemoveArticle={onRemoveArticle}
+        onRemoveArticle={onDeleteArticle}
       />
       <Comments {...post} user={user} />
     </div>

@@ -2,28 +2,39 @@ import { useState } from 'react'
 
 import Comment from './Comment'
 
-import { instance } from '../../instance'
+import { usePostCommentsMutation } from '../../services/query/posts'
 import { PostItem } from '../../types/Post'
 
 const Comments = ({ _id, comments, user }: PostItem) => {
   const [commentText, setCommentText] = useState('')
-  const [comment, setComment] = useState(comments)
   const [error, setError] = useState([])
+  const [comment, setComment] = useState(comments)
+  const [addComment] = usePostCommentsMutation()
 
   const onSubmit = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await instance.post(`/posts/${_id}/comment`, {
-        text: commentText,
-      })
-
-      comments.push(data)
-
-      setComment(comments)
+      const newComment = await addComment({ _id, text: commentText }).unwrap()
+      setComment([...comment, newComment])
       setCommentText('')
     } catch (error) {
-      setError(error.response.data)
+      setError(error.response?.data)
     }
+  }
+
+  const sortByNew = () => {
+    const item = [...comment]
+    const sorted = item.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    setComment(sorted)
+  }
+
+  const sortByPopular = () => {
+    const item = [...comment]
+    const sorted = item.sort((a, b) => b.emojis.length - a.emojis.length)
+    setComment(sorted)
   }
 
   return (
@@ -31,8 +42,15 @@ const Comments = ({ _id, comments, user }: PostItem) => {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-medium">Комментарии</h2>
         <div className="flex space-x-3">
-          <p className="cursor-pointer hover:text-sky-500">Последние</p>
-          <p className="cursor-pointer hover:text-sky-500">Популярные</p>
+          <p onClick={sortByNew} className="cursor-pointer hover:text-sky-500">
+            Последние
+          </p>
+          <p
+            onClick={sortByPopular}
+            className="cursor-pointer hover:text-sky-500"
+          >
+            Популярные
+          </p>
         </div>
       </div>
       {user && (
@@ -54,8 +72,10 @@ const Comments = ({ _id, comments, user }: PostItem) => {
           >
             Отправить
           </button>
-          {error?.map(({ message }) => (
-            <p className="text-red-500">{message}</p>
+          {error?.map(({ message }, index) => (
+            <p key={index} className="text-red-500">
+              {message}
+            </p>
           ))}
         </form>
       )}
