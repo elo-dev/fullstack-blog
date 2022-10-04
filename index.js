@@ -56,6 +56,7 @@ app.post(
   PostController.create
 )
 
+app.get('/search/:searchTerm', PostController.searchPost)
 app.patch(
   '/posts/:id',
   checkAuth,

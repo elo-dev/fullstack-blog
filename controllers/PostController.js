@@ -145,3 +145,19 @@ export const filterPopularPost = async (req, res) => {
     res.status(500).json([{ message: 'Не удалось отфильтровать посты' }])
   }
 }
+
+export const searchPost = async (req, res) => {
+  try {
+    const searchTerm = req.params.searchTerm
+
+    const searchedPost = await PostModel.find({
+      title: { $regex: searchTerm, $options: 'i' },
+    })
+      .populate('author')
+      .exec()
+
+    res.status(200).json(searchedPost)
+  } catch (error) {
+    res.status(500).json([{ message: 'Не удалось найти пост' }])
+  }
+}

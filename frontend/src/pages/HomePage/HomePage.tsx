@@ -9,14 +9,28 @@ import {
   useGetFiltredByPopularPostMutation,
   useGetPostsQuery,
 } from '../../services/query/posts'
+import { useAppSelector } from '../../hooks'
 
 const HomePage = () => {
   const { data, isLoading } = useGetPostsQuery()
+  const { posts: searchedPosts, loading } = useAppSelector(
+    (state) => state.post
+  )
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
-    setPosts(data)
+    if (!searchedPosts.length) {
+      setPosts(data)
+    }
   }, [data])
+
+  useEffect(() => {
+    if (searchedPosts.length) {
+      setPosts(searchedPosts)
+    } else {
+      setPosts(data)
+    }
+  }, [searchedPosts])
 
   const [filterNew, { isLoading: isLoadingFilterNew }] =
     useGetFiltredByNewPostMutation()
@@ -33,7 +47,7 @@ const HomePage = () => {
     setPosts(data)
   }
 
-  if (isLoading || isLoadingFilterNew || isLoadingFilterPopular)
+  if (isLoading || isLoadingFilterNew || isLoadingFilterPopular || loading)
     return <Loader />
 
   return (
