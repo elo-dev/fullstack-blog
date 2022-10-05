@@ -7,6 +7,7 @@ import Auth from './pages/Auth'
 import LoginPage from './pages/Auth/LoginPage/LoginPage'
 import RegistrationPage from './pages/Auth/RegistrationPage/RegistrationPage'
 import MarkdownEditor from './pages/MarkdownEditor/MarkdownEditor'
+import Settings from './pages/Settings/Settings'
 import NotFound from './pages/NotFound/NotFound'
 
 import Layout from './components/Layout'
@@ -32,6 +33,7 @@ const App = () => {
           <Route index element={<LoginPage />} />
           <Route path="registration" element={<RegistrationPage />} />
         </Route>
+        <Route path="settings" element={<Settings />} />
         <Route
           path="*"
           element={

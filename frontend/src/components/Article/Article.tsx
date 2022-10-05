@@ -1,7 +1,8 @@
-import { IoIosEye } from 'react-icons/io'
 import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import { IoIosEye } from 'react-icons/io'
 import { MdDelete, MdEdit } from 'react-icons/md'
+import { CgProfile } from 'react-icons/cg'
 
 import { PostItem } from '../../types/Post'
 
@@ -30,11 +31,15 @@ const Article = ({
       />
       <div className="py-5">
         <div className="ml-10 inline-flex cursor-pointer items-center space-x-2">
-          <img
-            src="https://images.unsplash.com/photo-1662404426135-27525a4cc993?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
-            alt={author.fullname}
-            className="h-10 w-10 rounded-full"
-          />
+          {author.avatarUrl ? (
+            <img
+              src={author.avatarUrl}
+              alt={author.fullname}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          ) : (
+            <CgProfile className="h-10 w-10 rounded-full text-black" />
+          )}
           <div>
             <p>{author.fullname}</p>
             <p className="text-slate-400">

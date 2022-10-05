@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import EmojiPicker from 'emoji-picker-react'
 import { GrEmoji } from 'react-icons/gr'
+import { CgProfile } from 'react-icons/cg'
 
 import useClickOutside from '../../hooks/useClickOutside'
 import { instance } from '../../instance'
@@ -42,11 +43,15 @@ const Comment = ({ id, author, emojis, text, createdAt }) => {
   return (
     <div className="space-y-3 border-b border-slate-400 pb-2">
       <div className="flex items-center space-x-2">
-        <img
-          src={author.avatarUrl}
-          alt={author.fullname}
-          className="h-10 w-10 rounded-full object-cover"
-        />
+        {author.avatarUrl ? (
+          <img
+            src={author.avatarUrl}
+            alt={author.fullname}
+            className="h-10 w-10 rounded-full object-cover"
+          />
+        ) : (
+          <CgProfile className="h-10 w-10 rounded-full text-black" />
+        )}
         <p>{author.fullname}</p>
       </div>
       <p>{text}</p>

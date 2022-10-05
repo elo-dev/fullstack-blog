@@ -21,3 +21,12 @@ export type AuthState = {
   loading: boolean
   error: Error[] | null
 }
+
+export type Update = {
+  id: string
+  userData: {
+    name?: string
+    email?: string
+    avatarUrl?: string
+  }
+}

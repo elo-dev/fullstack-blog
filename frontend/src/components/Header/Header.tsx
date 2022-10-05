@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { IoIosNotifications, IoIosArrowDown, IoIosSearch } from 'react-icons/io'
+import { CgProfile } from 'react-icons/cg'
 
 import { logout, selectIsAuth } from '../../services/slices/auth'
 import { fetchSearchedPosts } from '../../services/slices/posts'
@@ -70,10 +71,14 @@ const Header = () => {
       <div className="flex items-center space-x-3">
         {isAuth ? (
           <>
-            <img
-              className="h-[40px] w-[40px] cursor-pointer rounded-[50%] object-cover hover:outline hover:outline-sky-500"
-              src="https://images.unsplash.com/photo-1662401208927-0b71a8635a84?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
-            />
+            {user.avatarUrl ? (
+              <img
+                className="h-[42px] w-[42px] cursor-pointer rounded-[50%] border-2 border-transparent object-cover hover:border-sky-500"
+                src={user.avatarUrl}
+              />
+            ) : (
+              <CgProfile className="h-10 w-10 rounded-full text-black" />
+            )}
             <div className="flex items-center space-x-1">
               <p className="cursor-pointer hover:text-sky-500">
                 {isAuth && user.fullname}
@@ -94,6 +99,12 @@ const Header = () => {
                     onClick={() => setIsOpen((prevState) => !prevState)}
                   >
                     Создать статью
+                  </Link>
+                  <Link
+                    to="settings"
+                    className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500"
+                  >
+                    Настройки
                   </Link>
                   <li
                     onClick={onClickLogout}

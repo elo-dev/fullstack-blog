@@ -37,17 +37,17 @@ const Posts = ({
         </div>
         <div className="flex flex-col space-y-5">
           <div className="flex items-center justify-between">
-            <div className="flex flex-col items-center space-y-2 md:flex-row">
+            <div className="flex flex-col space-y-2 md:flex-row">
               {author.avatarUrl ? (
                 <img
                   src={author.avatarUrl}
                   alt={author.fullname}
-                  className="h-10 w-10 rounded-full"
+                  className="h-10 w-10 rounded-full object-cover"
                 />
               ) : (
                 <CgProfile className="h-10 w-10 rounded-full text-black" />
               )}
-              <p className="text-center text-slate-500 md:ml-3">
+              <p className="w-[150px] truncate text-slate-500 sm:w-[200px] sm:truncate md:ml-3 md:w-[100px] md:truncate">
                 {author.fullname}
               </p>
             </div>

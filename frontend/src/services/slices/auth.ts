@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { RootState } from '../index'
 import { instance } from '../../instance'
-import { AuthState, Login, Register } from '../../types/Auth'
+import { AuthState, Login, Register, Update } from '../../types/Auth'
 import { Me, User } from '../../types/User'
 
 export const fetchLogin = createAsyncThunk(
@@ -37,6 +37,19 @@ export const fetchRegister = createAsyncThunk(
   }
 )
 
+export const fetchUpdateProfile = createAsyncThunk(
+  'auth/update',
+  async ({ id, userData }: Update, { rejectWithValue }) => {
+    try {
+      const { data } = await instance.patch(`/auth/update/${id}`, userData)
+
+      return data
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 const initialState: AuthState = {
   user: null,
   loading: true,
@@ -54,10 +67,14 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addMatcher(
-        isAnyOf(fetchLogin.pending, fetchAuthMe.pending, fetchRegister.pending),
+        isAnyOf(
+          fetchLogin.pending,
+          fetchAuthMe.pending,
+          fetchRegister.pending,
+          fetchUpdateProfile.pending
+        ),
         (state) => {
           state.loading = true
-          state.user = null
           state.error = []
         }
       )
@@ -65,7 +82,8 @@ const authSlice = createSlice({
         isAnyOf(
           fetchLogin.fulfilled,
           fetchAuthMe.fulfilled,
-          fetchRegister.fulfilled
+          fetchRegister.fulfilled,
+          fetchUpdateProfile.fulfilled
         ),
         (state, { payload }) => {
           state.loading = false
@@ -77,11 +95,11 @@ const authSlice = createSlice({
         isAnyOf(
           fetchLogin.rejected,
           fetchAuthMe.rejected,
-          fetchRegister.rejected
+          fetchRegister.rejected,
+          fetchUpdateProfile.rejected
         ),
         (state, { payload }: any) => {
           state.loading = false
-          state.user = null
           state.error = payload
         }
       )

@@ -4,7 +4,11 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 import { checkAuth, handleValidationError } from './utils/index.js'
-import { loginValidation, registerValiddation } from './validations/auth.js'
+import {
+  loginValidation,
+  registerValiddation,
+  updateValidation,
+} from './validations/auth.js'
 import { createValidation } from './validations/post.js'
 import { commentValidation } from './validations/comment.js'
 import {
@@ -43,6 +47,15 @@ app.post(
   UserController.register
 )
 app.get('/auth/me', checkAuth, UserController.getMe)
+app.patch(
+  '/auth/update/:id',
+  checkAuth,
+  upload.single('avatarUrl'),
+  updateValidation,
+  handleValidationError,
+  cloudinaryMiddleware,
+  UserController.updateMe
+)
 
 app.get('/posts', PostController.getAll)
 app.get('/posts/:id', PostController.getOne)

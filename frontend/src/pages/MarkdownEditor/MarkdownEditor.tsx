@@ -6,8 +6,9 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Navigate, useParams } from 'react-router'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router'
 import MDEditor from 'react-simplemde-editor'
+import { VscLoading } from 'react-icons/vsc'
 
 import Back from '../../components/Back/Back'
 
@@ -17,41 +18,58 @@ import { selectIsAuth } from '../../services/slices/auth'
 
 import { PostItem } from '../../types/Post'
 
-import 'easymde/dist/easymde.min.css'
 import {
   useAddNewPostMutation,
   usePatchPostMutation,
 } from '../../services/query/posts'
+import { Me } from '../../types/User'
+
+import 'easymde/dist/easymde.min.css'
+import Loader from '../../components/Loader/Loader'
 
 const MarkdownEditor = () => {
   const { id } = useParams()
+  const navigation = useNavigate()
+  const { pathname } = useLocation()
   const [addNewPost] = useAddNewPostMutation()
   const [patchPost] = usePatchPostMutation()
   const isAuth = useAppSelector(selectIsAuth)
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
   const [tags, setTags] = useState('')
-  const [imageUrl, setImageUrl] = useState<any>('')
+  const [imageUrl, setImageUrl] = useState('')
   const [preview, setPreview] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [submitError, setSubmitError] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)
   const inputFileRef = useRef(null)
   const isEditing = Boolean(id)
 
-  const onChange = useCallback((value: string) => {
-    setText(value)
-  }, [])
-
   useEffect(() => {
-    if (id) {
+    if (
+      id &&
+      pathname.includes('edit') &&
+      isAuth &&
+      localStorage.getItem('token')
+    ) {
       instance.get<PostItem>(`/posts/${id}`).then((res) => {
-        setTitle(res.data.title)
-        setText(res.data.text)
-        setImageUrl(res.data.imageUrl)
-        setTags(res.data.tags.join(' '))
+        instance.get<Me>('/auth/me').then((user) => {
+          if (res.data.author._id !== user?.data._id) {
+            navigation('/')
+          } else {
+            setIsLoading(false)
+            setTitle(res.data.title)
+            setText(res.data.text)
+            setImageUrl(res.data.imageUrl)
+            setTags(res.data.tags?.join(' '))
+          }
+        })
       })
     }
+  }, [isAuth])
+
+  const onChange = useCallback((value: string) => {
+    setText(value)
   }, [])
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +90,6 @@ const MarkdownEditor = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault()
-      setIsLoading(true)
       const formData = new FormData()
       formData.append('title', title)
       formData.append('text', text)
@@ -92,7 +109,7 @@ const MarkdownEditor = () => {
       setTitle('')
       setSubmitError([])
     } catch (error) {
-      setSubmitError(error.response.data)
+      setSubmitError(error.data)
       setIsLoading(false)
     }
   }
@@ -119,6 +136,7 @@ const MarkdownEditor = () => {
   )
 
   if (!localStorage.getItem('token') && !isAuth) return <Navigate to="/auth" />
+  if (isLoading) return <Loader />
 
   return (
     <>
@@ -178,10 +196,13 @@ const MarkdownEditor = () => {
           type={'submit'}
           className="rounded-sm bg-sky-500 px-5 py-2 text-white hover:opacity-80 active:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80"
         >
-          {isEditing ? 'Сохранить' : 'Опубликовать'}
+          <div className="flex items-center space-x-2">
+            <p>{isEditing ? 'Сохранить' : 'Опубликовать'}</p>
+            {isLoading && <VscLoading className="animate-spin" />}
+          </div>
         </button>
         <div className="mt-3">
-          {submitError.map(({ message }, index) => (
+          {submitError?.map(({ message }, index) => (
             <p key={index} className="text-red-500">
               {message}
             </p>

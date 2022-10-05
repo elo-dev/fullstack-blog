@@ -17,3 +17,11 @@ export const loginValidation = [
     min: 7,
   }),
 ]
+
+export const updateValidation = [
+  body('email', 'Неверный формат почты').isEmail(),
+  body('fullname', 'Длина имени должна быть минимум 3 символов').isLength({
+    min: 3,
+  }),
+  body('avatarUrl', 'Некорректная ссылка на аватарку').optional().isURL(),
+]

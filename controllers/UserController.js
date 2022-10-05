@@ -85,3 +85,21 @@ export const getMe = async (req, res) => {
     res.status(500).json([{ message: 'Не удалось получить пользователя' }])
   }
 }
+
+export const updateMe = async (req, res) => {
+  try {
+    const user = await UserModel.findByIdAndUpdate(
+      { _id: req.params.id },
+      {
+        fullname: req.body.fullname,
+        email: req.body.email,
+        avatarUrl: req.body.imageUrl,
+      },
+      { returnDocument: 'after' }
+    ).exec()
+
+    res.status(200).json(user)
+  } catch (error) {
+    res.status(500).json([{ message: 'Не удалось обновить профиль' }])
+  }
+}
