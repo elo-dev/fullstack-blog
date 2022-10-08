@@ -39,24 +39,23 @@ const MarkdownEditor = () => {
   const [tags, setTags] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [preview, setPreview] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [submitError, setSubmitError] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)
   const inputFileRef = useRef(null)
   const isEditing = Boolean(id)
 
   useEffect(() => {
-    if (
-      id &&
-      pathname.includes('edit') &&
-      isAuth &&
-      localStorage.getItem('token')
-    ) {
+    setIsLoading(true)
+    if (!pathname.includes('edit')) {
+      setIsLoading(false)
+    }
+    if (pathname.includes('edit') && isAuth && localStorage.getItem('token')) {
       instance.get<PostItem>(`/posts/${id}`).then((res) => {
         instance.get<Me>('/auth/me').then((user) => {
           if (res.data.author._id !== user?.data._id) {
             navigation('/')
-          } else {
+          } else if (isEditing) {
             setIsLoading(false)
             setTitle(res.data.title)
             setText(res.data.text)
