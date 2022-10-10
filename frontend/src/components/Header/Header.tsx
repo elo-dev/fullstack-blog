@@ -4,22 +4,36 @@ import { useAppDispatch, useAppSelector } from '../../hooks'
 import { IoIosNotifications, IoIosArrowDown, IoIosSearch } from 'react-icons/io'
 import { CgProfile } from 'react-icons/cg'
 
+import Notifications from '../Notifications/Notifications'
+
 import { logout, selectIsAuth } from '../../services/slices/auth'
 import { fetchSearchedPosts } from '../../services/slices/posts'
 import useClickOutside from '../../hooks/useClickOutside'
+import { instance } from '../../instance'
 
 const Header = () => {
   const [searchParams] = useSearchParams()
   const term = searchParams.get('term') || ''
 
+  const isAuth = useAppSelector(selectIsAuth)
+  const user = useAppSelector((state) => state.auth.user)
+
   const [searchTerm, setSearchTerm] = useState(term)
   const [isLoading, setIsLoading] = useState(false)
   const [submitError, setSubmitError] = useState([])
+  const [countNotification, setCountNotification] = useState(null)
 
-  const isAuth = useAppSelector(selectIsAuth)
-  const user = useAppSelector((state) => state.auth.user)
-  const rootEl = useRef(null)
-  const { isOpen, setIsOpen } = useClickOutside(rootEl)
+  useEffect(() => {
+    setCountNotification(user?.notifications.length)
+  }, [user])
+
+  const rootElMenu = useRef(null)
+  const rootElNotification = useRef(null)
+
+  const { isOpen: isOpenMenu, setIsOpen: setIsOpenMenu } =
+    useClickOutside(rootElMenu)
+  const { isOpen: isOpenNotification, setIsOpen: setIsOpenNotification } =
+    useClickOutside(rootElNotification)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -27,7 +41,7 @@ const Header = () => {
   const onClickLogout = () => {
     dispatch(logout())
     localStorage.removeItem('token')
-    setIsOpen(false)
+    setIsOpenMenu(false)
   }
 
   useEffect(() => {
@@ -35,6 +49,12 @@ const Header = () => {
       dispatch(fetchSearchedPosts(searchTerm))
     }
   }, [])
+
+  const openNotification = () => {
+    setIsOpenNotification(!isOpenNotification)
+    setCountNotification(null)
+    instance.get('/notifications')
+  }
 
   const handlerSearchPost = async (e) => {
     e.preventDefault()
@@ -80,23 +100,23 @@ const Header = () => {
               <CgProfile className="h-10 w-10 rounded-full text-black" />
             )}
             <div className="flex items-center space-x-1">
-              <p className="cursor-pointer hover:text-sky-500">
+              <p className="max-w-[100px] cursor-pointer truncate hover:text-sky-500">
                 {isAuth && user.fullname}
               </p>
-              <nav className="relative" ref={rootEl}>
+              <nav className="relative" ref={rootElMenu}>
                 <IoIosArrowDown
-                  onClick={() => setIsOpen(!isOpen)}
+                  onClick={() => setIsOpenMenu(!isOpenMenu)}
                   className="cursor-pointer hover:text-sky-500"
                 />
                 <ul
                   className={`absolute right-[-30px] top-8 rounded-md bg-white p-2 drop-shadow-lg transition-all duration-300 ease-in-out ${
-                    isOpen ? 'visible opacity-100' : 'invisible opacity-0'
+                    isOpenMenu ? 'visible opacity-100' : 'invisible opacity-0'
                   }`}
                 >
                   <Link
                     to={'create-post'}
                     className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500"
-                    onClick={() => setIsOpen((prevState) => !prevState)}
+                    onClick={() => setIsOpenMenu((prevState) => !prevState)}
                   >
                     Создать статью
                   </Link>
@@ -115,10 +135,32 @@ const Header = () => {
                 </ul>
               </nav>
             </div>
-            <IoIosNotifications
-              size="25"
-              className="cursor-pointer hover:text-sky-500"
-            />
+            <div className="relative" ref={rootElNotification}>
+              <IoIosNotifications
+                size="25"
+                className="cursor-pointer hover:text-sky-500"
+                onClick={openNotification}
+              />
+              {!!countNotification && (
+                <span className="absolute right-[-8px] top-[-12px] flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 font-bold text-white">
+                  {countNotification > 9 ? '9+' : countNotification}
+                </span>
+              )}
+              <div
+                className={`absolute right-0 top-10 z-50 h-[400px] w-[350px] overflow-auto rounded-md bg-white p-4 drop-shadow-lg transition-all duration-300 ease-in-out md:h-[350px] md:w-[300px] md:translate-x-[15%] ${
+                  isOpenNotification
+                    ? 'visible opacity-100'
+                    : 'invisible opacity-0'
+                }`}
+              >
+                {isOpenNotification && (
+                  <Notifications
+                    setIsOpenNotification={setIsOpenNotification}
+                    notifications={user.notifications}
+                  />
+                )}
+              </div>
+            </div>
           </>
         ) : (
           <>

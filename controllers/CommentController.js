@@ -1,5 +1,6 @@
 import CommentModel from '../models/Comment.js'
 import PostModel from '../models/Post.js'
+import UserModel from '../models/User.js'
 
 export const create = async (req, res) => {
   try {
@@ -13,13 +14,31 @@ export const create = async (req, res) => {
 
     const comment = await doc.save()
 
-    comment.populate('author')
+    comment.populate('author post')
 
     const postRelated = await PostModel.findById(postId)
 
     postRelated.comments.push(comment)
 
     await postRelated.save()
+
+    const user = await UserModel.findById(postRelated.author._id)
+
+    if (user.id !== req.userId) {
+      user.notifications.push({
+        post: {
+          id: comment.post._id,
+          title: comment.post.title,
+        },
+        author: {
+          id: comment.author._id,
+          fullname: comment.author.fullname,
+          avatarUrl: comment.author.avatarUrl,
+        },
+      })
+
+      await user.save()
+    }
 
     res.status(200).json(comment)
   } catch (error) {

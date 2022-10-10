@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema(
       select: false,
     },
     avatarUrl: String,
+    notifications: {
+      type: Array,
+      default: [],
+    },
   },
   {
     timestamps: true,
