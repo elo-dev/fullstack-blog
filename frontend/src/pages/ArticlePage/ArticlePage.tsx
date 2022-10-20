@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
 import NotFound from '../NotFound/NotFound'
@@ -8,28 +7,24 @@ import Article from '../../components/Article/Article'
 import Back from '../../components/Back/Back'
 import Comments from '../../components/Comments'
 
-import { useAppSelector } from '../../hooks'
 import {
   useDeletePostMutation,
   useGetOnePostQuery,
 } from '../../services/query/posts'
+import { useAppSelector } from '../../hooks'
+import { currentUser } from '../../services/slices/userSlice'
 
 const ArticlePage = () => {
-  const { user } = useAppSelector((state) => state.auth)
-  const [error, setError] = useState(null)
-  const navigate = useNavigate()
   const { id } = useParams()
+  const navigate = useNavigate()
 
-  const [deleteArticle] = useDeletePostMutation()
+  const [deleteArticle, { error }] = useDeletePostMutation()
+  const { user } = useAppSelector(currentUser)
   const { data: post, isLoading, error: errorPost } = useGetOnePostQuery(id)
 
   const onDeleteArticle = async (id) => {
-    try {
-      await deleteArticle(id).unwrap()
-      navigate('/')
-    } catch (error) {
-      setError(error)
-    }
+    await deleteArticle(id).unwrap()
+    navigate('/')
   }
 
   if (isLoading) return <Loader />

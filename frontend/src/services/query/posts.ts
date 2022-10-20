@@ -1,20 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { api } from './index'
+import { PostItem } from '../../types/Post'
 
-export const posts = createApi({
-  reducerPath: 'posts',
-  tagTypes: ['Posts'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_API_URL,
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token')
-
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`)
-      }
-
-      return headers
-    },
-  }),
+const posts = api.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<any, void>({
       query: () => `/posts`,
@@ -29,6 +16,9 @@ export const posts = createApi({
     getOnePost: builder.query({
       query: (id) => `/posts/${id}`,
       providesTags: () => [{ type: 'Posts', id: 'LIST' }],
+    }),
+    getMyPosts: builder.query<PostItem[], string>({
+      query: (id) => `/posts/${id}/allmy`,
     }),
     getFiltredByNewPost: builder.mutation<any, void>({
       query: () => ({
@@ -47,7 +37,7 @@ export const posts = createApi({
         url: `/posts/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: [{ type: 'Posts', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Posts', id: 'LIST' }, 'Profile'],
     }),
     addNewPost: builder.mutation<any, any>({
       query: ({ formData }) => ({
@@ -55,7 +45,7 @@ export const posts = createApi({
         method: 'POST',
         body: formData,
       }),
-      invalidatesTags: [{ type: 'Posts', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Posts', id: 'LIST' }, 'Profile'],
     }),
     patchPost: builder.mutation<any, any>({
       query: ({ id, formData }) => ({
@@ -63,7 +53,7 @@ export const posts = createApi({
         method: 'PATCH',
         body: formData,
       }),
-      invalidatesTags: [{ type: 'Posts', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Posts', id: 'LIST' }, 'Profile'],
     }),
     postComments: builder.mutation({
       query: ({ _id, ...rest }) => ({
@@ -71,6 +61,7 @@ export const posts = createApi({
         method: 'POST',
         body: rest,
       }),
+      invalidatesTags: [{ type: 'Posts', id: 'LIST' }],
     }),
   }),
 })
@@ -84,4 +75,5 @@ export const {
   useAddNewPostMutation,
   usePatchPostMutation,
   usePostCommentsMutation,
+  useGetMyPostsQuery,
 } = posts

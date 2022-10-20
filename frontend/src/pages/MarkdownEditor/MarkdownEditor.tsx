@@ -11,29 +11,32 @@ import MDEditor from 'react-simplemde-editor'
 import { VscLoading } from 'react-icons/vsc'
 
 import Back from '../../components/Back/Back'
+import Loader from '../../components/Loader/Loader'
 
 import { instance } from '../../instance'
-import { useAppSelector } from '../../hooks'
-import { selectIsAuth } from '../../services/slices/auth'
 
 import { PostItem } from '../../types/Post'
 
+import { useAppSelector } from '../../hooks'
+import { selectIsAuth } from '../../services/slices/userSlice'
 import {
   useAddNewPostMutation,
   usePatchPostMutation,
 } from '../../services/query/posts'
+
 import { Me } from '../../types/User'
 
 import 'easymde/dist/easymde.min.css'
-import Loader from '../../components/Loader/Loader'
 
 const MarkdownEditor = () => {
   const { id } = useParams()
   const navigation = useNavigate()
   const { pathname } = useLocation()
+
   const [addNewPost] = useAddNewPostMutation()
   const [patchPost] = usePatchPostMutation()
   const isAuth = useAppSelector(selectIsAuth)
+
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
   const [tags, setTags] = useState('')
@@ -43,6 +46,7 @@ const MarkdownEditor = () => {
   const [submitError, setSubmitError] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)
   const inputFileRef = useRef(null)
+
   const isEditing = Boolean(id)
 
   useEffect(() => {
@@ -90,8 +94,8 @@ const MarkdownEditor = () => {
     try {
       e.preventDefault()
       const formData = new FormData()
-      formData.append('title', title)
-      formData.append('text', text)
+      formData.append('title', title.trim())
+      formData.append('text', text.trim())
       formData.append('tags', tags)
       formData.append('imageUrl', imageUrl)
 
@@ -134,7 +138,7 @@ const MarkdownEditor = () => {
     []
   )
 
-  if (!localStorage.getItem('token') && !isAuth) return <Navigate to="/auth" />
+  if (!localStorage.getItem('token') || !isAuth) return <Navigate to="/auth" />
   if (isLoading) return <Loader />
 
   return (

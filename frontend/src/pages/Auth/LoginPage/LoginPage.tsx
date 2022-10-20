@@ -1,27 +1,21 @@
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdEmail, MdLock } from 'react-icons/md'
 
-import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { fetchLogin } from '../../../services/slices/auth'
+import { useLoginMutation } from '../../../services/query/user'
 
 import { Login } from '../../../types/Auth'
 
 const LoginPage = () => {
-  const dispatch = useAppDispatch()
-  const { error, loading } = useAppSelector((state) => state.auth)
-  const [errorMsg, setErrorMsg] = useState('')
+  const [login, { isLoading, error }] = useLoginMutation()
 
   const onSubmit = async (values: Login) => {
     try {
-      const data: any = await dispatch(fetchLogin(values))
+      const data = await login(values).unwrap()
 
-      if ('token' in data.payload) {
-        localStorage.setItem('token', data.payload.token)
+      if ('token' in data) {
+        localStorage.setItem('token', data.token)
       }
-    } catch (error) {
-      setErrorMsg('Не удалось авторизоваться')
-    }
+    } catch (error) {}
   }
 
   const {
@@ -71,19 +65,18 @@ const LoginPage = () => {
         />
       </div>
       <button
-        disabled={loading}
+        disabled={isLoading}
         type={'submit'}
         className="w-1/4 cursor-pointer bg-sky-500 py-2 text-white hover:opacity-80 active:bg-sky-600 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80 md:w-1/2 sm:md:w-full"
       >
         Войти
       </button>
       <div className="mt-3">
-        {error?.map(({ message }, index) => (
+        {(error as any)?.data.map(({ message }, index) => (
           <p key={index} className="text-red-500">
             {message}
           </p>
         ))}
-        <p className="text-red-500">{errorMsg}</p>
         <p className="text-red-500">{errors.email?.message}</p>
         <p className="text-red-500">{errors.password?.message}</p>
       </div>

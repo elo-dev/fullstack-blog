@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Route, Routes } from 'react-router'
 
 import HomePage from './pages/HomePage/HomePage'
@@ -9,18 +8,14 @@ import RegistrationPage from './pages/Auth/RegistrationPage/RegistrationPage'
 import MarkdownEditor from './pages/MarkdownEditor/MarkdownEditor'
 import Settings from './pages/Settings/Settings'
 import NotFound from './pages/NotFound/NotFound'
+import Profile from './pages/Profile/Profile'
 
 import Layout from './components/Layout'
 
-import { useAppDispatch } from './hooks'
-import { fetchAuthMe } from './services/slices/auth'
+import { useAuthMeQuery } from './services/query/user'
 
 const App = () => {
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    dispatch(fetchAuthMe())
-  }, [dispatch])
+  useAuthMeQuery()
 
   return (
     <Routes>
@@ -33,6 +28,7 @@ const App = () => {
           <Route index element={<LoginPage />} />
           <Route path="registration" element={<RegistrationPage />} />
         </Route>
+        <Route path="profile/:id" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
         <Route
           path="*"

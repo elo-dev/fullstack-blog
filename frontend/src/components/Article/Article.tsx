@@ -30,7 +30,10 @@ const Article = ({
         className="max-h-[450px] w-full object-cover"
       />
       <div className="py-5">
-        <div className="ml-10 inline-flex cursor-pointer items-center space-x-2">
+        <Link
+          to={`/profile/${author._id}`}
+          className="ml-10 inline-flex cursor-pointer items-center space-x-2"
+        >
           {author.avatarUrl ? (
             <img
               src={author.avatarUrl}
@@ -46,7 +49,7 @@ const Article = ({
               {isCreatedToday ? todayTime : createdDate}
             </p>
           </div>
-        </div>
+        </Link>
         <div className="flex justify-between px-10">
           <div>
             <h1 className="my-5 text-5xl font-semibold">{title}</h1>

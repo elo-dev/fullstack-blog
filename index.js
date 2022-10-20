@@ -16,6 +16,7 @@ import {
   PostController,
   CommentController,
   NotificationController,
+  ProfileController,
 } from './controllers/index.js'
 import { cloudinaryMiddleware } from './controllers/cloudinaryMiddleware.js'
 import upload from './utils/multer.js'
@@ -96,6 +97,11 @@ app.get('/filter/popular', PostController.filterPopularPost)
 app.patch('/comment/emoji', checkAuth, CommentController.addEmoji)
 
 app.get('/notifications', checkAuth, NotificationController.getAll)
+
+app.get('/profile/:id', ProfileController.getProfile)
+
+app.patch('/follow', checkAuth, UserController.follow)
+app.patch('/unfollow', checkAuth, UserController.unfollow)
 
 app.listen(PORT, (err) => {
   if (err) {

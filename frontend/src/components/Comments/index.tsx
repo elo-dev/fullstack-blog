@@ -7,19 +7,19 @@ import { PostItem } from '../../types/Post'
 
 const Comments = ({ _id, comments, user }: PostItem) => {
   const [commentText, setCommentText] = useState('')
-  const [error, setError] = useState([])
   const [comment, setComment] = useState(comments)
-  const [addComment] = usePostCommentsMutation()
+  const [addComment, { isLoading, error }] = usePostCommentsMutation()
 
   const onSubmit = async (e) => {
     e.preventDefault()
     try {
-      const newComment = await addComment({ _id, text: commentText }).unwrap()
+      const newComment = await addComment({
+        _id,
+        text: commentText.trim(),
+      }).unwrap()
       setComment([...comment, newComment])
       setCommentText('')
-    } catch (error) {
-      setError(error.response?.data)
-    }
+    } catch (error) {}
   }
 
   const sortByNew = () => {
@@ -67,12 +67,12 @@ const Comments = ({ _id, comments, user }: PostItem) => {
           />
           <button
             type={'submit'}
-            disabled={!commentText.length}
+            disabled={!commentText.length || isLoading}
             className="rounded-md border border-sky-500 bg-sky-500 p-2 text-white hover:opacity-90 active:bg-sky-600 disabled:cursor-not-allowed disabled:bg-slate-400"
           >
             Отправить
           </button>
-          {error?.map(({ message }, index) => (
+          {(error as any)?.data.map(({ message }, index) => (
             <p key={index} className="text-red-500">
               {message}
             </p>

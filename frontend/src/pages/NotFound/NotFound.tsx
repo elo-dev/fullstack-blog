@@ -1,11 +1,10 @@
 import { useNavigate } from 'react-router'
-import { NotFoundProps } from './type'
 
-const NotFound = ({ error }: NotFoundProps) => {
+const NotFound = ({ error }) => {
   const navigate = useNavigate()
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center space-y-5">
+    <div className="flex h-[calc(100vh-85px)] flex-col items-center justify-center space-y-5 md:h-[calc(100vh-140px)]">
       <h1 className="text-9xl font-extrabold text-sky-500 drop-shadow-md">
         {error.status}
       </h1>

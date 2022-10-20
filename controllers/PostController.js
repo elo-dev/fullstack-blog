@@ -1,4 +1,5 @@
 import PostModel from '../models/Post.js'
+import UserModel from '../models/User.js'
 
 export const create = async (req, res) => {
   try {
@@ -11,6 +12,12 @@ export const create = async (req, res) => {
     })
 
     const post = await doc.save()
+
+    const user = await UserModel.findById(req.userId)
+
+    user.posts.push(post)
+
+    await user.save()
 
     res.status(200).json(post)
   } catch (error) {

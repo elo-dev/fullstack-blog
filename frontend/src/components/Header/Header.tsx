@@ -1,22 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../hooks'
 import { IoIosNotifications, IoIosArrowDown, IoIosSearch } from 'react-icons/io'
 import { CgProfile } from 'react-icons/cg'
 
 import Notifications from '../Notifications/Notifications'
 
-import { logout, selectIsAuth } from '../../services/slices/auth'
-import { fetchSearchedPosts } from '../../services/slices/posts'
 import useClickOutside from '../../hooks/useClickOutside'
+
+import { fetchSearchedPosts } from '../../services/slices/posts'
+import { currentUser, logout } from '../../services/slices/userSlice'
+
+import { useAppDispatch, useAppSelector } from '../../hooks'
 import { instance } from '../../instance'
 
 const Header = () => {
   const [searchParams] = useSearchParams()
   const term = searchParams.get('term') || ''
 
-  const isAuth = useAppSelector(selectIsAuth)
-  const user = useAppSelector((state) => state.auth.user)
+  const { user } = useAppSelector(currentUser)
 
   const [searchTerm, setSearchTerm] = useState(term)
   const [isLoading, setIsLoading] = useState(false)
@@ -39,9 +40,10 @@ const Header = () => {
   const navigate = useNavigate()
 
   const onClickLogout = () => {
-    dispatch(logout())
     localStorage.removeItem('token')
+    dispatch(logout())
     setIsOpenMenu(false)
+    navigate('/')
   }
 
   useEffect(() => {
@@ -89,20 +91,25 @@ const Header = () => {
         <p key={index}>{message}</p>
       ))}
       <div className="flex items-center space-x-3">
-        {isAuth ? (
+        {user ? (
           <>
-            {user.avatarUrl ? (
-              <img
-                className="h-[42px] w-[42px] cursor-pointer rounded-[50%] border-2 border-transparent object-cover hover:border-sky-500"
-                src={user.avatarUrl}
-              />
-            ) : (
-              <CgProfile className="h-10 w-10 rounded-full text-black" />
-            )}
+            <Link to={`profile/${user._id}`}>
+              {user.avatarUrl ? (
+                <img
+                  className="h-[42px] w-[42px] cursor-pointer rounded-[50%] border-2 border-transparent object-cover hover:border-sky-500"
+                  src={user.avatarUrl}
+                />
+              ) : (
+                <CgProfile className="h-10 w-10 rounded-full text-black" />
+              )}
+            </Link>
             <div className="flex items-center space-x-1">
-              <p className="max-w-[100px] cursor-pointer truncate hover:text-sky-500">
-                {isAuth && user.fullname}
-              </p>
+              <Link
+                to={`profile/${user._id}`}
+                className="max-w-[100px] cursor-pointer truncate hover:text-sky-500"
+              >
+                {user?.fullname}
+              </Link>
               <nav className="relative" ref={rootElMenu}>
                 <IoIosArrowDown
                   onClick={() => setIsOpenMenu(!isOpenMenu)}

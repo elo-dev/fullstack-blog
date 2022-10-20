@@ -103,3 +103,55 @@ export const updateMe = async (req, res) => {
     res.status(500).json([{ message: 'Не удалось обновить профиль' }])
   }
 }
+
+export const follow = async (req, res) => {
+  try {
+    if (req.userId === req.body.followId)
+      return res.status(405).json([{ message: 'Действие не доступно' }])
+
+    await UserModel.findByIdAndUpdate(
+      req.body.followId,
+      {
+        $push: { followers: req.userId },
+      },
+      { returnDocument: 'after' }
+    )
+    await UserModel.findByIdAndUpdate(
+      req.userId,
+      {
+        $push: { following: req.body.followId },
+      },
+      { returnDocument: 'after' }
+    )
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    res.status(500).json([{ message: 'Не удалось подписаться' }])
+  }
+}
+
+export const unfollow = async (req, res) => {
+  try {
+    if (req.userId === req.body.unfollowId)
+      return res.status(405).json([{ message: 'Действие не доступно' }])
+
+    await UserModel.findByIdAndUpdate(
+      req.body.unfollowId,
+      {
+        $pull: { followers: req.userId },
+      },
+      { returnDocument: 'after' }
+    )
+    await UserModel.findByIdAndUpdate(
+      req.userId,
+      {
+        $pull: { following: req.body.unfollowId },
+      },
+      { returnDocument: 'after' }
+    )
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    res.status(500).json([{ message: 'Не удалось подписаться' }])
+  }
+}

@@ -1,4 +1,5 @@
 import { Notification } from '../components/Notifications/type'
+import { PostItem } from './Post'
 
 export interface User {
   _id: string
@@ -7,6 +8,9 @@ export interface User {
   avatarUrl: string
   createdAt: string
   notifications: Notification[]
+  posts: PostItem[]
+  followers: string[]
+  following: string[]
 }
 
 export interface Me extends User {

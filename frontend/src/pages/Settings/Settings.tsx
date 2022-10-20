@@ -7,15 +7,16 @@ import { VscLoading } from 'react-icons/vsc'
 
 import Back from '../../components/Back/Back'
 
-import { useAppDispatch, useAppSelector } from '../../hooks'
-import { fetchUpdateProfile, selectIsAuth } from '../../services/slices/auth'
+import { useUpdateMeMutation } from '../../services/query/user'
+import { useAppSelector } from '../../hooks'
+import { currentUser } from '../../services/slices/userSlice'
 
 const Settings = () => {
+  const { user } = useAppSelector(currentUser)
+  const [updateMe, { isLoading, error }] = useUpdateMeMutation()
+
   const [preview, setPreview] = useState(null)
   const [imageUrl, setImageUrl] = useState(null)
-  const isAuth = useAppSelector(selectIsAuth)
-  const { user, error, loading } = useAppSelector((state) => state.auth)
-  const dispatch = useAppDispatch()
 
   const { handleSubmit, register, reset } = useForm({
     defaultValues: {
@@ -47,11 +48,12 @@ const Settings = () => {
 
     if (!fullname && !email && !imageUrl) return
 
-    await dispatch(fetchUpdateProfile({ id: user?._id, userData }))
+    await updateMe({ id: user?._id, userData }).unwrap()
     reset()
   }
 
-  if (!localStorage.getItem('token') && !isAuth) return <Navigate to="/auth" />
+  if (!localStorage.getItem('token') && !user) return <Navigate to="/auth" />
+
   return (
     <>
       <div className="flex items-center space-x-4 md:justify-between">
@@ -108,14 +110,14 @@ const Settings = () => {
           <button
             type={'submit'}
             className="rounded-sm bg-sky-500 px-3 py-1 text-white hover:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-500 md:px-4 md:py-1 md:text-lg"
-            disabled={loading}
+            disabled={isLoading}
           >
             <div className="flex items-center space-x-2">
               <p>Сохранить</p>
-              {loading && <VscLoading className="animate-spin" />}
+              {isLoading && <VscLoading className="animate-spin" />}
             </div>
           </button>
-          {error?.map(({ message }, index) => (
+          {(error as any)?.map(({ message }, index) => (
             <p key={index} className="text-red-500">
               {message}
             </p>

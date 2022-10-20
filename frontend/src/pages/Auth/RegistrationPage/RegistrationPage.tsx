@@ -1,15 +1,11 @@
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MdEmail, MdLock, MdPerson } from 'react-icons/md'
 
-import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { fetchRegister } from '../../../services/slices/auth'
+import { useRegisterMutation } from '../../../services/query/user'
 import { Register } from '../../../types/Auth'
 
 const RegistrationPage = () => {
-  const dispatch = useAppDispatch()
-  const { error, loading } = useAppSelector((state) => state.auth)
-  const [errorMsg, setErrorMsg] = useState('')
+  const [registerMe, { isLoading, error }] = useRegisterMutation()
 
   const {
     register,
@@ -26,14 +22,12 @@ const RegistrationPage = () => {
 
   const onSubmit = async (values: Register) => {
     try {
-      const data: any = await dispatch(fetchRegister(values))
+      const data = await registerMe(values).unwrap()
 
-      if ('token' in data.payload) {
-        localStorage.setItem('token', data.payload.token)
+      if ('token' in data) {
+        localStorage.setItem('token', data.token)
       }
-    } catch (error) {
-      setErrorMsg('Не удалось зарегистрироваться')
-    }
+    } catch (error) {}
   }
 
   return (
@@ -54,7 +48,13 @@ const RegistrationPage = () => {
         <input
           name="fullname"
           type={'text'}
-          {...register('fullname', { required: 'Укажите Ваше имя' })}
+          {...register('fullname', {
+            required: 'Укажите Ваше имя',
+            pattern: {
+              value: /^[a-zA-Z]+$/,
+              message: 'Некорректное имя',
+            },
+          })}
           className="w-full border-sky-500 bg-transparent p-2 focus:border-r-4 focus:outline-none"
           placeholder="Полное имя"
         />
@@ -89,19 +89,18 @@ const RegistrationPage = () => {
         />
       </div>
       <button
-        disabled={loading}
+        disabled={isLoading}
         type={'submit'}
         className="w-1/4 cursor-pointer bg-sky-500 py-2 text-white hover:opacity-80 active:bg-sky-600 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80 md:w-1/2 sm:md:w-full"
       >
         Зарегистрироваться
       </button>
       <div className="mt-3">
-        {error?.map(({ message }, index) => (
+        {(error as any)?.data.map(({ message }: any, index) => (
           <p key={index} className="text-red-500">
             {message}
           </p>
         ))}
-        <p className="text-red-500">{errorMsg}</p>
         <p className="text-red-500">{errors.fullname?.message}</p>
         <p className="text-red-500">{errors.email?.message}</p>
         <p className="text-red-500">{errors.password?.message}</p>

@@ -2,13 +2,13 @@ import { Navigate, Outlet } from 'react-router'
 
 import Back from '../../components/Back/Back'
 
-import { selectIsAuth } from '../../services/slices/auth'
 import { useAppSelector } from '../../hooks'
+import { currentUser } from '../../services/slices/userSlice'
 
 const Auth = () => {
-  const isAuth = useAppSelector(selectIsAuth)
+  const { user } = useAppSelector(currentUser)
 
-  if (isAuth) {
+  if (localStorage.getItem('token') || user) {
     return <Navigate to={'/'} />
   }
 

@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import EmojiPicker from 'emoji-picker-react'
 import { GrEmoji } from 'react-icons/gr'
 import { CgProfile } from 'react-icons/cg'
 
 import useClickOutside from '../../hooks/useClickOutside'
-import { instance } from '../../instance'
 import { useAppSelector } from '../../hooks'
+import { instance } from '../../instance'
+import { selectIsAuth } from '../../services/slices/userSlice'
 
 const Comment = ({ id, author, emojis, text, createdAt }) => {
   const [emoji, setEmoji] = useState({})
   const rootEl = useRef(null)
   const { isOpen, setIsOpen } = useClickOutside(rootEl)
-  const { user } = useAppSelector((state) => state.auth)
+  const isAuth = useAppSelector(selectIsAuth)
 
   useEffect(() => {
     const emojiCount = emojis.reduce((acc, el) => {
@@ -42,7 +44,10 @@ const Comment = ({ id, author, emojis, text, createdAt }) => {
 
   return (
     <div className="space-y-3 border-b border-slate-400 pb-2">
-      <div className="flex items-center space-x-2">
+      <Link
+        to={`/profile/${author._id}`}
+        className="inline-flex items-center space-x-2"
+      >
         {author.avatarUrl ? (
           <img
             src={author.avatarUrl}
@@ -53,10 +58,10 @@ const Comment = ({ id, author, emojis, text, createdAt }) => {
           <CgProfile className="h-10 w-10 rounded-full text-black" />
         )}
         <p>{author.fullname}</p>
-      </div>
+      </Link>
       <p>{text}</p>
       <div className="relative flex items-center space-x-3">
-        {user && (
+        {isAuth && (
           <p ref={rootEl} onClick={() => setIsOpen(!isOpen)}>
             <GrEmoji size={20} className="cursor-pointer hover:text-sky-500" />
           </p>

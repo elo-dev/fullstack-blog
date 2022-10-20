@@ -37,7 +37,10 @@ const Posts = ({
         </div>
         <div className="flex flex-col space-y-5">
           <div className="flex items-center justify-between">
-            <div className="flex flex-col space-y-2 md:flex-row">
+            <Link
+              to={`/profile/${author._id}`}
+              className="z-50 flex flex-col space-y-2 md:flex-row"
+            >
               {author.avatarUrl ? (
                 <img
                   src={author.avatarUrl}
@@ -47,10 +50,10 @@ const Posts = ({
               ) : (
                 <CgProfile className="h-10 w-10 rounded-full text-black" />
               )}
-              <p className="w-[150px] truncate text-slate-500 sm:w-[200px] sm:truncate md:ml-3 md:w-[100px] md:truncate">
+              <p className="max-w-[150px] truncate text-slate-500 sm:w-[200px] sm:truncate md:ml-3 md:w-[100px] md:truncate">
                 {author.fullname}
               </p>
-            </div>
+            </Link>
             <p className="text-right text-slate-500">
               {isCreatedToday ? todayTime : createdDate}
             </p>
