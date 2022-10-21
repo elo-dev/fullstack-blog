@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Comment from './Comment'
 
@@ -7,8 +7,12 @@ import { PostItem } from '../../types/Post'
 
 const Comments = ({ _id, comments, user }: PostItem) => {
   const [commentText, setCommentText] = useState('')
-  const [comment, setComment] = useState(comments)
+  const [comment, setComment] = useState([])
   const [addComment, { isLoading, error }] = usePostCommentsMutation()
+
+  useEffect(() => {
+    setComment(comments)
+  }, [comments])
 
   const onSubmit = async (e) => {
     e.preventDefault()

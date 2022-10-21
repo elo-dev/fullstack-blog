@@ -7,8 +7,8 @@ import { VscLoading } from 'react-icons/vsc'
 
 import Back from '../../components/Back/Back'
 
-import { useUpdateMeMutation } from '../../services/query/user'
 import { useAppSelector } from '../../hooks'
+import { useUpdateMeMutation } from '../../services/query/user'
 import { currentUser } from '../../services/slices/userSlice'
 
 const Settings = () => {
@@ -22,6 +22,7 @@ const Settings = () => {
     defaultValues: {
       fullname: '',
       email: '',
+      aboutMe: '',
     },
     mode: 'onChange',
   })
@@ -37,19 +38,22 @@ const Settings = () => {
   }
 
   const onSubmit = async (values) => {
-    const { fullname, email } = values
-    const userData: any = new FormData()
+    try {
+      const { fullname, email, aboutMe } = values
+      const userData: any = new FormData()
 
-    userData.append('fullname', fullname || user?.fullname)
-    userData.append('email', email || user?.email)
-    if (imageUrl || user?.avatarUrl) {
-      userData.append('avatarUrl', imageUrl || user?.avatarUrl)
-    }
+      userData.append('fullname', fullname || user?.fullname)
+      userData.append('email', email || user?.email)
+      userData.append('aboutMe', aboutMe || user?.aboutMe)
+      if (imageUrl || user?.avatarUrl) {
+        userData.append('avatarUrl', imageUrl || user?.avatarUrl)
+      }
 
-    if (!fullname && !email && !imageUrl) return
+      if (!fullname && !email && !aboutMe && !imageUrl) return
 
-    await updateMe({ id: user?._id, userData }).unwrap()
-    reset()
+      await updateMe({ id: user?._id, userData }).unwrap()
+      reset()
+    } catch (error) {}
   }
 
   if (!localStorage.getItem('token') && !user) return <Navigate to="/auth" />
@@ -107,6 +111,13 @@ const Settings = () => {
             placeholder="Почта"
             className="mx-auto block rounded-md border border-sky-500 px-3 py-1 outline-none md:w-[250px]"
           />
+          <input
+            name="aboutMe"
+            {...register('aboutMe')}
+            type={'text'}
+            placeholder="О себе"
+            className="mx-auto block rounded-md border border-sky-500 px-3 py-1 outline-none md:w-[250px]"
+          />
           <button
             type={'submit'}
             className="rounded-sm bg-sky-500 px-3 py-1 text-white hover:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-500 md:px-4 md:py-1 md:text-lg"
@@ -117,7 +128,7 @@ const Settings = () => {
               {isLoading && <VscLoading className="animate-spin" />}
             </div>
           </button>
-          {(error as any)?.map(({ message }, index) => (
+          {(error as any)?.data.map(({ message }, index) => (
             <p key={index} className="text-red-500">
               {message}
             </p>

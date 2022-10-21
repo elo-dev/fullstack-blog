@@ -11,6 +11,7 @@ export interface User {
   posts: PostItem[]
   followers: string[]
   following: string[]
+  aboutMe: string
 }
 
 export interface Me extends User {

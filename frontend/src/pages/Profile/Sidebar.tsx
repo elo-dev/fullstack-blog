@@ -1,4 +1,5 @@
 import { CgProfile } from 'react-icons/cg'
+
 import PossibleSubscribers from '../../components/PossibleSubscribers/PossibleSubscribers'
 
 import {
@@ -33,7 +34,9 @@ const Sidebar = ({ authUser, userProfile }: SidebarProps) => {
           <CgProfile className="mx-auto h-[72px] w-[72px] rounded-full object-cover" />
         )}
         <h1 className="text-lg">{userProfile.fullname}</h1>
-        <p className="line-clamp-2">about me</p>
+        {userProfile.aboutMe && (
+          <p className="line-clamp-2">{userProfile.aboutMe}</p>
+        )}
         <div className="grid grid-cols-2 divide-x">
           <div>
             <p>{userProfile.following.length}</p>

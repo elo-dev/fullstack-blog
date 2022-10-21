@@ -13,9 +13,8 @@ const posts = api.injectEndpoints({
             ]
           : [{ type: 'Posts', id: 'LIST' }],
     }),
-    getOnePost: builder.query({
+    getOnePost: builder.query<PostItem, string>({
       query: (id) => `/posts/${id}`,
-      providesTags: () => [{ type: 'Posts', id: 'LIST' }],
     }),
     getMyPosts: builder.query<PostItem[], string>({
       query: (id) => `/posts/${id}/allmy`,

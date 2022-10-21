@@ -93,6 +93,7 @@ export const updateMe = async (req, res) => {
       {
         fullname: req.body.fullname,
         email: req.body.email,
+        aboutMe: req.body.aboutMe,
         avatarUrl: req.body.imageUrl,
       },
       { returnDocument: 'after' }

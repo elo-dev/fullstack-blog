@@ -50,6 +50,7 @@ const user = api.injectEndpoints({
         method: 'PATCH',
         body: userData,
       }),
+      invalidatesTags: ['User', 'Profile'],
     }),
   }),
 })
