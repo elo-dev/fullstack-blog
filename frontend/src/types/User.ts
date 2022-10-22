@@ -7,6 +7,7 @@ export interface User {
   email: string
   avatarUrl: string
   createdAt: string
+  newNotifications: Notification[]
   notifications: Notification[]
   posts: PostItem[]
   followers: string[]

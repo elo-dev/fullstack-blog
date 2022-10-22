@@ -17,10 +17,8 @@ const UserSchema = new mongoose.Schema(
       select: false,
     },
     avatarUrl: String,
-    notifications: {
-      type: Array,
-      default: [],
-    },
+    newNotifications: { type: Array, default: [] },
+    notifications: { type: Array, default: [] },
     aboutMe: String,
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

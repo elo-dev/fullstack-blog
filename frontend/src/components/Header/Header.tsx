@@ -9,9 +9,9 @@ import useClickOutside from '../../hooks/useClickOutside'
 
 import { fetchSearchedPosts } from '../../services/slices/posts'
 import { currentUser, logout } from '../../services/slices/userSlice'
+import { useGetNotificationQuery } from '../../services/query/user'
 
 import { useAppDispatch, useAppSelector } from '../../hooks'
-import { instance } from '../../instance'
 
 const Header = () => {
   const [searchParams] = useSearchParams()
@@ -25,7 +25,7 @@ const Header = () => {
   const [countNotification, setCountNotification] = useState(null)
 
   useEffect(() => {
-    setCountNotification(user?.notifications.length)
+    setCountNotification(user?.newNotifications.length)
   }, [user])
 
   const rootElMenu = useRef(null)
@@ -35,6 +35,8 @@ const Header = () => {
     useClickOutside(rootElMenu)
   const { isOpen: isOpenNotification, setIsOpen: setIsOpenNotification } =
     useClickOutside(rootElNotification)
+
+  useGetNotificationQuery(null, { skip: !isOpenNotification })
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -55,7 +57,6 @@ const Header = () => {
   const openNotification = () => {
     setIsOpenNotification(!isOpenNotification)
     setCountNotification(null)
-    instance.get('/notifications')
   }
 
   const handlerSearchPost = async (e) => {
@@ -163,7 +164,10 @@ const Header = () => {
                 {isOpenNotification && (
                   <Notifications
                     setIsOpenNotification={setIsOpenNotification}
-                    notifications={user.notifications}
+                    notifications={[
+                      ...user.notifications,
+                      ...user.newNotifications,
+                    ]}
                   />
                 )}
               </div>

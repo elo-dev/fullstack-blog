@@ -1,11 +1,8 @@
 export type Notification = {
-  post: {
-    id: string
-    title: string
-  }
-  author: {
-    id: string
-    fullname: string
-    avatarUrl: string
-  }
+  userId: string
+  postId: string
+  fullname: string
+  avatarUrl: string
+  title: string
+  description: string
 }

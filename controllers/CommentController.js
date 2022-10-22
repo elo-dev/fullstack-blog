@@ -25,16 +25,13 @@ export const create = async (req, res) => {
     const user = await UserModel.findById(postRelated.author._id)
 
     if (user.id !== req.userId) {
-      user.notifications.push({
-        post: {
-          id: comment.post._id,
-          title: comment.post.title,
-        },
-        author: {
-          id: comment.author._id,
-          fullname: comment.author.fullname,
-          avatarUrl: comment.author.avatarUrl,
-        },
+      user.newNotifications.push({
+        userId: comment.author._id,
+        postId: comment.post._id,
+        fullname: comment.author.fullname,
+        avatarUrl: comment.author.avatarUrl,
+        description: 'оставил комментарий на пост',
+        title: comment.post.title,
       })
 
       await user.save()

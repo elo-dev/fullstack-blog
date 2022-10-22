@@ -12,7 +12,9 @@ import {
 import { useAppSelector } from '../../hooks'
 
 const HomePage = () => {
-  const { data, isLoading } = useGetPostsQuery()
+  const { data, isLoading } = useGetPostsQuery(null, {
+    refetchOnMountOrArgChange: true,
+  })
   const { posts: searchedPosts, loading } = useAppSelector(
     (state) => state.post
   )

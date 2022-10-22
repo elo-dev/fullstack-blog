@@ -22,22 +22,25 @@ const Notifications = ({ setIsOpenNotification, notifications }) => {
             className="flex items-center space-x-3 rounded-sm bg-gray-200 p-2 md:space-x-2"
           >
             <div className="basis-1/4 md:basis-1/2">
-              {item.author.avatarUrl ? (
-                <img
-                  src={item.author.avatarUrl}
-                  className="mx-auto h-10 w-10 rounded-full object-cover"
-                  alt={item.author.fullname}
-                />
+              {item.avatarUrl ? (
+                <Link to={`/profile/${item.userId}`}>
+                  <img
+                    src={item.avatarUrl}
+                    className="mx-auto h-10 w-10 rounded-full object-cover"
+                    alt={item.fullname}
+                  />
+                </Link>
               ) : (
                 <MdImageNotSupported className="mx-auto h-10 w-10 rounded-full text-black" />
               )}
             </div>
             <Link
-              to={`/post/${item.post.id}`}
-              className="line-clamp-3 font-light hover:text-sky-500"
+              to={`${
+                item.postId ? `/post/${item.postId}` : `/profile/${item.userId}`
+              }`}
+              className="line-clamp-3 basis-full font-light hover:text-sky-500"
             >
-              {item.author.fullname} оставил комментарий на пост{' '}
-              {item.post.title}
+              {item.fullname} {item.description} {item.title}
             </Link>
           </div>
         ))}

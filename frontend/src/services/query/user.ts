@@ -1,7 +1,7 @@
 import { api } from './index'
 
 import { Login, Register, Update } from '../../types/Auth'
-import { Me } from '../../types/User'
+import { Me, User } from '../../types/User'
 import { setUser } from '../slices/userSlice'
 
 const user = api.injectEndpoints({
@@ -52,6 +52,15 @@ const user = api.injectEndpoints({
       }),
       invalidatesTags: ['User', 'Profile'],
     }),
+    getNotification: builder.query<User, void>({
+      query: () => '/notifications',
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          dispatch(setUser(data))
+        } catch (error) {}
+      },
+    }),
   }),
 })
 
@@ -60,4 +69,5 @@ export const {
   useUpdateMeMutation,
   useLoginMutation,
   useRegisterMutation,
+  useGetNotificationQuery,
 } = user
