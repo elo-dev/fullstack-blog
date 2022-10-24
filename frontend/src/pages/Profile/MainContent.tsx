@@ -50,7 +50,7 @@ const MainContent = ({
             <span>{viewsCount}</span>
           </div>
           <ul className="line-clamp-1">
-            {tags?.map((tag, index) => (
+            {tags?.tag?.map((tag, index) => (
               <li
                 key={index}
                 className="mr-2 inline-block font-medium text-slate-400"

@@ -22,6 +22,10 @@ export interface PostItem extends ArticleProps {
   imageUrl: string
   createdAt: Date
   viewsCount: number
-  tags?: string[]
+  tags?: {
+    _id: string
+    tag: []
+  }
+
   comments: Comment[]
 }

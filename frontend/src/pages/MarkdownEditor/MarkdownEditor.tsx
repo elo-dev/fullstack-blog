@@ -64,7 +64,7 @@ const MarkdownEditor = () => {
             setTitle(res.data.title)
             setText(res.data.text)
             setImageUrl(res.data.imageUrl)
-            setTags(res.data.tags?.join(' '))
+            setTags(res.data.tags?.tag?.join(' '))
           }
         })
       })
@@ -138,7 +138,7 @@ const MarkdownEditor = () => {
     []
   )
 
-  if (!localStorage.getItem('token') || !isAuth) return <Navigate to="/auth" />
+  if (!localStorage.getItem('token') && !isAuth) return <Navigate to="/auth" />
   if (isLoading) return <Loader />
 
   return (
@@ -174,7 +174,7 @@ const MarkdownEditor = () => {
           type={'file'}
           ref={inputFileRef}
           onChange={handleChangeFile}
-          accept="image/*"
+          accept="image/png, image/jpeg, image/jpg, image/svg, image/avif"
           hidden
         />
         <div className="my-3 flex flex-col space-y-2">

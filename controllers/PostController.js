@@ -1,17 +1,26 @@
 import PostModel from '../models/Post.js'
+import TagsModel from '../models/Tags.js'
 import UserModel from '../models/User.js'
 
 export const create = async (req, res) => {
   try {
-    const doc = new PostModel({
+    const docPost = new PostModel({
       title: req.body.title,
       text: req.body.text,
-      tags: req.body.tags?.match(/\S+/g),
       imageUrl: req.body.imageUrl,
       author: req.userId,
     })
 
-    const post = await doc.save()
+    if (req.body.tags) {
+      const docTags = new TagsModel({
+        tag: req.body.tags.match(/\S+/g),
+      })
+
+      docPost.tags = docTags
+      await docTags.save()
+    }
+
+    const post = await docPost.save()
 
     const user = await UserModel.findById(req.userId)
 
@@ -28,7 +37,7 @@ export const create = async (req, res) => {
 export const getAll = async (req, res) => {
   try {
     const posts = await PostModel.find()
-      .populate('author comments')
+      .populate('author comments tags')
       .sort({ createdAt: -1 })
       .exec()
 
@@ -65,7 +74,7 @@ export const getOne = async (req, res) => {
         res.status(200).json(doc)
       }
     )
-      .populate('author comments')
+      .populate('author comments tags')
       .populate({
         path: 'comments',
         populate: {
@@ -108,18 +117,54 @@ export const update = async (req, res) => {
   try {
     const postId = req.params.id
 
-    await PostModel.updateOne(
+    const docPost = await PostModel.findOneAndUpdate(
       {
         _id: postId,
       },
       {
         title: req.body.title,
         text: req.body.text,
-        tags: req.body.tags.match(/\S+/g),
         imageUrl: req.body.imageUrl,
         author: req.userId,
       }
     )
+
+    if (req.body.tags) {
+      if (docPost.tags) {
+        await TagsModel.updateOne(
+          {
+            _id: docPost.tags?._id,
+          },
+          {
+            tag: req.body.tags.match(/\S+/g),
+          }
+        )
+      } else {
+        const docTags = new TagsModel({
+          tag: req.body.tags.match(/\S+/g),
+        })
+
+        docPost.tags = docTags
+        await docTags.save()
+        await docPost.save()
+      }
+    } else {
+      if (docPost.tags) {
+        await TagsModel.deleteOne({
+          _id: docPost.tags._id,
+        })
+
+        await PostModel.updateOne({ _id: postId }, { $unset: { tags: 1 } })
+      } else {
+        const docTags = new TagsModel({
+          tag: req.body.tags.match(/\S+/g),
+        })
+
+        docPost.tags = docTags
+        await docTags.save()
+        await docPost.save()
+      }
+    }
 
     res.status(200).json({ success: true })
   } catch (error) {

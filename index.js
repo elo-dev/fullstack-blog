@@ -99,6 +99,7 @@ app.patch('/comment/emoji', checkAuth, CommentController.addEmoji)
 app.get('/notifications', checkAuth, NotificationController.getAll)
 
 app.get('/profile/:id', ProfileController.getProfile)
+app.get('/tags', checkAuth, ProfileController.getTags)
 
 app.patch('/follow', checkAuth, UserController.follow)
 app.patch('/unfollow', checkAuth, UserController.unfollow)

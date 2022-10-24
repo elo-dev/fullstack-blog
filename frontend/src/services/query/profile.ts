@@ -28,8 +28,16 @@ const profile = api.injectEndpoints({
       }),
       invalidatesTags: ['Profile', 'User'],
     }),
+    getTags: builder.query<[], void>({
+      query: () => '/tags',
+      providesTags: ['Profile'],
+    }),
   }),
 })
 
-export const { useGetProfileQuery, useFollowMutation, useUnfollowMutation } =
-  profile
+export const {
+  useGetProfileQuery,
+  useFollowMutation,
+  useUnfollowMutation,
+  useGetTagsQuery,
+} = profile

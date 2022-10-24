@@ -54,12 +54,12 @@ const Article = ({
           <div>
             <h1 className="my-5 text-5xl font-semibold">{title}</h1>
             <ul>
-              {tags?.map((tag, index) => (
+              {tags?.tag?.map((item, index) => (
                 <li
                   key={index}
                   className="mr-2 inline-block text-slate-400 last:mr-0"
                 >
-                  #{tag}
+                  #{item}
                 </li>
               ))}
             </ul>

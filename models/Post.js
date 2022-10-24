@@ -10,10 +10,7 @@ const PostScheme = new mongoose.Schema(
       type: String,
       required: true,
     },
-    tags: {
-      type: Array,
-      default: [],
-    },
+    tags: { type: mongoose.Schema.Types.ObjectId, ref: 'Tags' },
     viewsCount: {
       type: Number,
       default: 0,

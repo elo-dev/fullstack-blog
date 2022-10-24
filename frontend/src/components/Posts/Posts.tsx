@@ -70,16 +70,18 @@ const Posts = ({
             children={text}
             className="line-clamp-2 font-medium text-slate-500"
           />
-          <ul className="line-clamp-1">
-            {tags?.map((tag, index) => (
-              <li
-                key={index}
-                className="mr-2 inline-block font-medium text-slate-400"
-              >
-                #{tag}
-              </li>
-            ))}
-          </ul>
+          {tags && (
+            <ul className="line-clamp-1">
+              {tags?.tag?.map((item, index) => (
+                <li
+                  key={index}
+                  className="mr-2 inline-block font-medium text-slate-400"
+                >
+                  #{item}
+                </li>
+              ))}
+            </ul>
+          )}
           <p className="flex items-center space-x-1 text-slate-400">
             <IoIosEye />
             <span>{viewsCount}</span>
