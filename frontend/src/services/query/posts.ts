@@ -31,6 +31,12 @@ const posts = api.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getFiltredByFriends: builder.mutation<any, void>({
+      query: () => ({
+        url: '/filter/friends',
+        method: 'GET',
+      }),
+    }),
     deletePost: builder.mutation({
       query: (id) => ({
         url: `/posts/${id}`,
@@ -70,6 +76,7 @@ export const {
   useGetOnePostQuery,
   useGetFiltredByNewPostMutation,
   useGetFiltredByPopularPostMutation,
+  useGetFiltredByFriendsMutation,
   useDeletePostMutation,
   useAddNewPostMutation,
   usePatchPostMutation,

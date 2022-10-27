@@ -5,6 +5,7 @@ import Posts from '../../components/Posts/Posts'
 import Loader from '../../components/Loader/Loader'
 
 import {
+  useGetFiltredByFriendsMutation,
   useGetFiltredByNewPostMutation,
   useGetFiltredByPopularPostMutation,
   useGetPostsQuery,
@@ -18,6 +19,7 @@ const HomePage = () => {
   const { posts: searchedPosts, loading } = useAppSelector(
     (state) => state.post
   )
+
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
@@ -38,6 +40,8 @@ const HomePage = () => {
     useGetFiltredByNewPostMutation()
   const [filterPopular, { isLoading: isLoadingFilterPopular }] =
     useGetFiltredByPopularPostMutation()
+  const [filterFriends, { isLoading: isLoadingFilterFriends }] =
+    useGetFiltredByFriendsMutation()
 
   const onFilterNew = async () => {
     const data = await filterNew().unwrap()
@@ -49,12 +53,27 @@ const HomePage = () => {
     setPosts(data)
   }
 
-  if (isLoading || isLoadingFilterNew || isLoadingFilterPopular || loading)
+  const onFilterFriends = async () => {
+    const data = await filterFriends().unwrap()
+    setPosts(data)
+  }
+
+  if (
+    isLoading ||
+    isLoadingFilterNew ||
+    isLoadingFilterPopular ||
+    isLoadingFilterFriends ||
+    loading
+  )
     return <Loader />
 
   return (
     <>
-      <Filters onFilterNew={onFilterNew} onFilterPopular={onFilterPopular} />
+      <Filters
+        onFilterNew={onFilterNew}
+        onFilterPopular={onFilterPopular}
+        onFilterFriends={onFilterFriends}
+      />
       <h1 className="text-8xl font-semibold md:text-7xl">The Blog</h1>
       {!posts?.length ? (
         <div className="grid h-[calc(100vh-285px)] items-center justify-center md:h-[calc(100vh-315px)]">

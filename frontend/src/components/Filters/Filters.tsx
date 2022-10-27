@@ -1,20 +1,23 @@
-const Filters = ({ onFilterPopular, onFilterNew }) => {
+const Filters = ({ onFilterPopular, onFilterNew, onFilterFriends }) => {
   return (
     <div className="my-10">
       <ul className="flex space-x-4 uppercase md:justify-center">
         <li
-          onClick={() => onFilterNew()}
+          onClick={onFilterNew}
           className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline"
         >
           новые
         </li>
         <li
-          onClick={() => onFilterPopular()}
+          onClick={onFilterPopular}
           className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline"
         >
           популярные
         </li>
-        <li className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline">
+        <li
+          onClick={onFilterFriends}
+          className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline"
+        >
           Друзья
         </li>
       </ul>

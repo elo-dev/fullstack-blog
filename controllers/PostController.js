@@ -213,3 +213,23 @@ export const searchPost = async (req, res) => {
     res.status(500).json([{ message: 'Не удалось найти пост' }])
   }
 }
+
+export const filterFriendsPost = async (req, res) => {
+  try {
+    const users = await UserModel.findById(req.userId).populate({
+      path: 'following',
+      populate: {
+        path: 'posts',
+        populate: {
+          path: 'author',
+        },
+      },
+    })
+
+    const posts = users.following.flatMap((item) => item.posts)
+
+    res.status(200).json(posts)
+  } catch (error) {
+    res.status(500).json([{ message: 'Не удалось отфильтровать посты' }])
+  }
+}

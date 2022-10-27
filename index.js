@@ -93,6 +93,7 @@ app.post(
 
 app.get('/filter/new', PostController.filterNewPost)
 app.get('/filter/popular', PostController.filterPopularPost)
+app.get('/filter/friends', checkAuth, PostController.filterFriendsPost)
 
 app.patch('/comment/emoji', checkAuth, CommentController.addEmoji)
 
