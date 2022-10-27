@@ -84,7 +84,7 @@ const Settings = () => {
               id={'file'}
               onChange={handleChangeFile}
               className="hidden"
-              accept="image/*"
+              accept="image/png, image/jpeg, image/jpg, .svg"
               name="avatar"
             />
             <label

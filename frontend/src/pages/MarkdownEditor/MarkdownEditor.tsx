@@ -174,7 +174,7 @@ const MarkdownEditor = () => {
           type={'file'}
           ref={inputFileRef}
           onChange={handleChangeFile}
-          accept="image/png, image/jpeg, image/jpg, image/svg, image/avif"
+          accept="image/png, image/jpeg, image/jpg, .svg"
           hidden
         />
         <div className="my-3 flex flex-col space-y-2">
