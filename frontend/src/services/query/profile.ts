@@ -32,6 +32,10 @@ const profile = api.injectEndpoints({
       query: () => '/tags',
       providesTags: ['Profile'],
     }),
+    getSuggestedFriends: builder.query<User[], void>({
+      query: () => '/suggestedFriends',
+      providesTags: ['User'],
+    }),
   }),
 })
 
@@ -40,4 +44,5 @@ export const {
   useFollowMutation,
   useUnfollowMutation,
   useGetTagsQuery,
+  useGetSuggestedFriendsQuery,
 } = profile

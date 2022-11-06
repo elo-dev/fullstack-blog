@@ -22,7 +22,7 @@ const Posts = ({
   const { createdDate, isCreatedToday, todayTime } = timeTransform(createdAt)
 
   return (
-    <Fragment key={_id}>
+    <>
       <div className="relative flex flex-col space-y-5">
         <div className="h-[300px]">
           {imageUrl ? (
@@ -88,7 +88,7 @@ const Posts = ({
           </p>
         </div>
       </div>
-    </Fragment>
+    </>
   )
 }
 export default Posts

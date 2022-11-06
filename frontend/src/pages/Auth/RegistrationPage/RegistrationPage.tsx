@@ -51,7 +51,7 @@ const RegistrationPage = () => {
           {...register('fullname', {
             required: 'Укажите Ваше имя',
             pattern: {
-              value: /^[a-zA-Z]+$/,
+              value: /^[a-zA-Zа-яА-Я]+$/,
               message: 'Некорректное имя',
             },
           })}

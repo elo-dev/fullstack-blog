@@ -101,6 +101,7 @@ app.get('/notifications', checkAuth, NotificationController.getAll)
 
 app.get('/profile/:id', ProfileController.getProfile)
 app.get('/tags', checkAuth, ProfileController.getTags)
+app.get('/suggestedFriends', checkAuth, ProfileController.getSuggestedFriends)
 
 app.patch('/follow', checkAuth, UserController.follow)
 app.patch('/unfollow', checkAuth, UserController.unfollow)
