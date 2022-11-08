@@ -22,6 +22,8 @@ export const getProfile = async (req, res) => {
           path: 'tags',
         },
       })
+      .populate('following')
+      .populate('followers')
 
     if (!userProfile)
       return res.status(404).json([{ message: 'Пользователь не найден' }])

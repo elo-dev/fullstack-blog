@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router'
-import Header from '../components/Header/Header'
+import Header from '../../Header/Header'
 
-const Layout = () => {
+const MainLayout = () => {
   return (
     <div className="container mx-auto max-w-full px-7">
       <Header />
@@ -9,4 +9,4 @@ const Layout = () => {
     </div>
   )
 }
-export default Layout
+export default MainLayout

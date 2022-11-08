@@ -83,7 +83,7 @@ const Header = () => {
           type="text"
           disabled={isLoading}
           className="w-full bg-transparent p-1.5 focus:outline-none"
-          placeholder="Search"
+          placeholder="Поиск статьи"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

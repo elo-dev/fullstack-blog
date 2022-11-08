@@ -10,7 +10,10 @@ import Settings from './pages/Settings/Settings'
 import NotFound from './pages/NotFound/NotFound'
 import Profile from './pages/Profile/Profile'
 
-import Layout from './components/Layout'
+import Layout from './components/Layouts/MainLayout/MainLayout'
+import ProfileLayout from './components/Layouts/ProfileLayout/ProfileLayout'
+import SubscriptionsList from './components/SubscriptionsList/SubscriptionsList'
+import FollowersList from './components/FollowersList/FollowersList'
 
 import { useAuthMeQuery } from './services/query/user'
 
@@ -28,7 +31,11 @@ const App = () => {
           <Route index element={<LoginPage />} />
           <Route path="registration" element={<RegistrationPage />} />
         </Route>
-        <Route path="profile/:id" element={<Profile />} />
+        <Route path="profile/:id" element={<ProfileLayout />}>
+          <Route index element={<Profile />} />
+          <Route path="subscriptions" element={<SubscriptionsList />} />
+          <Route path="followers" element={<FollowersList />} />
+        </Route>
         <Route path="settings" element={<Settings />} />
         <Route
           path="*"
