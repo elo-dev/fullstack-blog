@@ -1,7 +1,6 @@
-import { User } from '../../types/User'
+import { PostItem } from '@myTypes/Post'
 
-export type ArticleProps = {
+export interface ArticleProps extends PostItem {
   isEditable?: boolean
-  onRemoveArticle?: (_id: string) => any
-  user: User
+  onRemoveArticle: (_id: string) => void
 }

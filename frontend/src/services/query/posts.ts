@@ -1,19 +1,19 @@
-import { api } from './index'
-import { PostItem } from '../../types/Post'
+import { api } from '@services/query/index'
+import { PostItem } from '@myTypes/Post'
 
 const posts = api.injectEndpoints({
   endpoints: (builder) => ({
-    getPosts: builder.query<any, void>({
+    getPosts: builder.query<PostItem[], void>({
       query: () => `/posts`,
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: 'Posts', id: _id })),
+              ...result.map(({ _id }) => ({ type: 'Posts' as const, id: _id })),
               { type: 'Posts', id: 'LIST' },
             ]
           : [{ type: 'Posts', id: 'LIST' }],
     }),
-    getOnePost: builder.query<PostItem, string>({
+    getOnePost: builder.query<PostItem, string | undefined>({
       query: (id) => `/posts/${id}`,
     }),
     getMyPosts: builder.query<PostItem[], string>({

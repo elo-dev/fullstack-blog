@@ -7,7 +7,7 @@ export const fetchSearchedPosts = createAsyncThunk(
     try {
       const { data } = await instance.get(`/search/${searchTerm}`)
       return data
-    } catch (error) {
+    } catch (error: any) {
       return rejectWithValue(error.response.data)
     }
   }

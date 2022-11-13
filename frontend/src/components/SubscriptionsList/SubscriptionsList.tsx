@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useOutletContext } from 'react-router'
 import { FiSearch } from 'react-icons/fi'
 
-import UserList from '../UserList/UserList'
+import UserList from '@components/UserList/UserList'
 
-import { ContextType } from '../../types/Context'
+import { ContextType } from '@myTypes/Context'
 
 const SubscriptionsList = () => {
   const [value, setValue] = useState('')

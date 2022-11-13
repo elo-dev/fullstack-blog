@@ -1,5 +1,5 @@
-import { Notification } from '../components/Notifications/type'
-import { PostItem } from './Post'
+import { Notification } from '@components/Notifications/type'
+import { PostItem } from '@myTypes/Post'
 
 export interface User {
   _id: string

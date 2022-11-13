@@ -1,22 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import EmojiPicker from 'emoji-picker-react'
+import EmojiPicker, { IEmojiData } from 'emoji-picker-react'
 import { GrEmoji } from 'react-icons/gr'
 import { CgProfile } from 'react-icons/cg'
 
-import useClickOutside from '../../hooks/useClickOutside'
-import { useAppSelector } from '../../hooks'
-import { instance } from '../../instance'
-import { selectIsAuth } from '../../services/slices/userSlice'
+import useClickOutside from '@hooks/useClickOutside'
+import { useAppSelector } from '@hooks/index'
 
-const Comment = ({ id, author, emojis, text, createdAt }) => {
+import { instance } from '../../instance'
+
+import { selectIsAuth } from '@services/slices/userSlice'
+
+import { IComment } from '@myTypes/Post'
+
+const Comment = ({ _id, author, emojis, text, createdAt }: IComment) => {
   const [emoji, setEmoji] = useState({})
   const rootEl = useRef(null)
   const { isOpen, setIsOpen } = useClickOutside(rootEl)
   const isAuth = useAppSelector(selectIsAuth)
 
   useEffect(() => {
-    const emojiCount = emojis.reduce((acc, el) => {
+    const emojiCount = emojis.reduce((acc: any, el) => {
       acc[el.emoji] = (acc[el.emoji] || 0) + 1
       return acc
     }, {})
@@ -24,14 +28,14 @@ const Comment = ({ id, author, emojis, text, createdAt }) => {
     setEmoji(emojiCount)
   }, [])
 
-  const onEmojiClick = async (event, emojiObject) => {
+  const onEmojiClick = async (event: any, emojiObject: IEmojiData) => {
     try {
-      const { data } = await instance.patch('/comment/emoji', {
-        id,
+      const { data } = await instance.patch<IEmojiData[]>('/comment/emoji', {
+        id: _id,
         emoji: emojiObject.emoji,
       })
 
-      const emojiCount = data.reduce((acc, el) => {
+      const emojiCount = data.reduce((acc: any, el) => {
         acc[el.emoji] = (acc[el.emoji] || 0) + 1
         return acc
       }, {})

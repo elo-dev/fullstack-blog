@@ -1,21 +1,23 @@
 import { useRef } from 'react'
 import { Outlet, useParams } from 'react-router'
 
-import Back from '../../Back/Back'
-import RecommendsTags from '../../../pages/Profile/RecommendsTags'
-import Sidebar from '../../../pages/Profile/Sidebar'
-import NotFound from '../../../pages/NotFound/NotFound'
-import PossibleSubscribers from '../../PossibleSubscribers/PossibleSubscribers'
-import Loader from '../../Loader/Loader'
+import RecommendsTags from '@pages/Profile/RecommendsTags'
+import Sidebar from '@pages/Profile/Sidebar'
+import NotFound from '@pages/NotFound/NotFound'
 
-import { useAppSelector } from '../../../hooks'
+import Back from '@components/Back/Back'
+import Loader from '@components/Loader/Loader'
+import PossibleSubscribers from '@components/PossibleSubscribers/PossibleSubscribers'
+
+import { useAppSelector } from '@hooks/index'
 
 import {
   useFollowMutation,
   useGetProfileQuery,
   useUnfollowMutation,
-} from '../../../services/query/profile'
-import { currentUser, selectIsAuth } from '../../../services/slices/userSlice'
+} from '@services/query/profile'
+import { currentUser, selectIsAuth } from '@services/slices/userSlice'
+import { ServerError } from '@myTypes/Error'
 
 const ProfileLayout = () => {
   const { id } = useParams()
@@ -30,7 +32,7 @@ const ProfileLayout = () => {
     if (id) {
       await follow(id).unwrap()
     } else {
-      await follow(profile._id).unwrap()
+      await follow(profile?._id).unwrap()
     }
   }
 
@@ -38,12 +40,12 @@ const ProfileLayout = () => {
     if (id) {
       await unfollow(id).unwrap()
     } else {
-      await unfollow(profile._id).unwrap()
+      await unfollow(profile?._id).unwrap()
     }
   }
 
   if (isLoading) return <Loader />
-  if (error) return <NotFound error={error} />
+  if (error) return <NotFound error={error as ServerError} />
 
   return (
     <>

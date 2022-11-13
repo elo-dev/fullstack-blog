@@ -1,8 +1,9 @@
 import { api } from './index'
 
-import { Login, Register, Update } from '../../types/Auth'
-import { Me, User } from '../../types/User'
 import { setUser } from '../slices/userSlice'
+
+import { Login, Register } from '@myTypes/Auth'
+import { Me, User } from '@myTypes/User'
 
 const user = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,7 +15,9 @@ const user = api.injectEndpoints({
         try {
           const { data } = await queryFulfilled
           dispatch(setUser(data))
-        } catch (error) {}
+        } catch (error) {
+          if (error) return localStorage.removeItem('token')
+        }
       },
       providesTags: ['User'],
     }),
@@ -44,15 +47,15 @@ const user = api.injectEndpoints({
         } catch (error) {}
       },
     }),
-    updateMe: builder.mutation({
-      query: ({ id, userData }: Update) => ({
+    updateMe: builder.mutation<void, any>({
+      query: ({ id, userData }) => ({
         url: `/auth/update/${id}`,
         method: 'PATCH',
         body: userData,
       }),
       invalidatesTags: ['User', 'Profile'],
     }),
-    getNotification: builder.query<User, void>({
+    getNotification: builder.query<User, null>({
       query: () => '/notifications',
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {

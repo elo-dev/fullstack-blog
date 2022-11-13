@@ -1,8 +1,8 @@
 import { Link, useOutletContext } from 'react-router-dom'
 
-import { ContextType } from '../../types/Context'
-
 import MainContent from './MainContent'
+
+import { ContextType } from '@myTypes/Context'
 
 const Profile = () => {
   const { profile, isAuth } = useOutletContext<ContextType>()

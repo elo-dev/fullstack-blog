@@ -5,10 +5,10 @@ import { RiUserUnfollowLine } from 'react-icons/ri'
 import { FaUserFriends } from 'react-icons/fa'
 import { CgProfile } from 'react-icons/cg'
 
-import { useAppSelector } from '../../hooks'
+import { useAppSelector } from '@hooks/index'
 
-import { useUnfollowMutation } from '../../services/query/profile'
-import { currentUser } from '../../services/slices/userSlice'
+import { useUnfollowMutation } from '@services/query/profile'
+import { currentUser } from '@services/slices/userSlice'
 
 import { UserListProps } from './types'
 
@@ -82,7 +82,7 @@ const UserList = ({
             >
               Посмотреть подписки
             </Link>
-            {profileId === user._id && (
+            {profileId === user?._id && (
               <button
                 onClick={handleUnfollow}
                 className="cursor-pointer py-2 hover:text-red-500"

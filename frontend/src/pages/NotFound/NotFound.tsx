@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router'
 
-const NotFound = ({ error }) => {
+import { ErrorProps } from '@pages/NotFound/types'
+
+const NotFound = ({ error }: ErrorProps) => {
   const navigate = useNavigate()
 
   return (

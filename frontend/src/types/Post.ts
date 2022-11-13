@@ -1,4 +1,4 @@
-import { ArticleProps } from '../components/Article/type'
+import { IEmojiData } from 'emoji-picker-react'
 
 export type Author = {
   _id: string
@@ -6,15 +6,15 @@ export type Author = {
   avatarUrl: string
 }
 
-export interface Comment {
+export interface IComment {
   _id: string
   author: Author
-  emojis: []
+  emojis: IEmojiData[]
   text: string
   createdAt: string
 }
 
-export interface PostItem extends ArticleProps {
+export interface PostItem {
   _id: string
   title: string
   author: Author
@@ -26,6 +26,5 @@ export interface PostItem extends ArticleProps {
     _id: string
     tag: []
   }
-
-  comments: Comment[]
+  comments: IComment[]
 }

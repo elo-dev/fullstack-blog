@@ -1,13 +1,12 @@
-import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import { IoIosEye } from 'react-icons/io'
 import { CgProfile } from 'react-icons/cg'
 import { MdImageNotSupported } from 'react-icons/md'
 
-import { PostItem } from '../../types/Post'
+import { timeTransform } from '@utils/timeTransform'
 
-import { timeTransform } from '../../utilts/timeTransform'
+import { PostItem } from '@myTypes/Post'
 
 const Posts = ({
   _id,

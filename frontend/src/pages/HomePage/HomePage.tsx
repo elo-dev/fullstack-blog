@@ -1,26 +1,34 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 
-import Filters from '../../components/Filters/Filters'
-import Posts from '../../components/Posts/Posts'
-import Loader from '../../components/Loader/Loader'
+import Filters from '@components/Filters/Filters'
+import Posts from '@components/Posts/Posts'
+import Loader from '@components/Loader/Loader'
 
+import { useAppSelector } from '@hooks/index'
+
+import { selectIsAuth } from '@services/slices/userSlice'
 import {
   useGetFiltredByFriendsMutation,
   useGetFiltredByNewPostMutation,
   useGetFiltredByPopularPostMutation,
   useGetPostsQuery,
-} from '../../services/query/posts'
-import { useAppSelector } from '../../hooks'
+} from '@services/query/posts'
+
+import { PostItem } from '@myTypes/Post'
 
 const HomePage = () => {
-  const { data, isLoading } = useGetPostsQuery(null, {
+  const isAuth = useAppSelector(selectIsAuth)
+  const { data, isLoading } = useGetPostsQuery(undefined, {
     refetchOnMountOrArgChange: true,
   })
   const { posts: searchedPosts, loading } = useAppSelector(
     (state) => state.post
   )
 
-  const [posts, setPosts] = useState([])
+  const navigation = useNavigate()
+
+  const [posts, setPosts] = useState<PostItem[] | undefined>([])
 
   useEffect(() => {
     if (!searchedPosts.length) {
@@ -54,8 +62,12 @@ const HomePage = () => {
   }
 
   const onFilterFriends = async () => {
-    const data = await filterFriends().unwrap()
-    setPosts(data)
+    if (!isAuth) {
+      navigation('/auth')
+    } else {
+      const data = await filterFriends().unwrap()
+      setPosts(data)
+    }
   }
 
   if (

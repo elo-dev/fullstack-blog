@@ -1,4 +1,4 @@
-import { useGetTagsQuery } from '../../services/query/profile'
+import { useGetTagsQuery } from '@services/query/profile'
 
 const RecommendsTags = () => {
   const { data: tags } = useGetTagsQuery()

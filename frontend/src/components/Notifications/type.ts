@@ -6,3 +6,8 @@ export type Notification = {
   title: string
   description: string
 }
+
+export type NotificationProps = {
+  setIsOpenNotification: (prev: any) => void
+  notifications: Notification[]
+}

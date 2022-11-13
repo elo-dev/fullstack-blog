@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { RefObject, useEffect, useState } from 'react'
 
-const useClickOutside = (rootEl) => {
+const useClickOutside = <T extends HTMLElement>(rootEl: RefObject<T>) => {
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     if (isOpen) return
 
-    const onClick = (e) => {
+    const onClick = (e: MouseEvent) => {
       if (!rootEl.current) return
-      if (!rootEl.current.contains(e.target)) {
+      if (!rootEl.current.contains(e.target as Node)) {
         setIsOpen(false)
       }
     }

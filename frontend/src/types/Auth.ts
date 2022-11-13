@@ -1,10 +1,10 @@
-import { User } from './User'
+import { User } from '@myTypes/User'
 
 export type Register = {
   email: string
   password: string
   fullname: string
-  avatarUrl: string
+  avatarUrl?: string
 }
 
 export type Login = {
@@ -13,14 +13,13 @@ export type Login = {
 }
 
 export type AuthState = {
-  user: User
+  user: User | null
 }
 
 export type Update = {
   id: string
-  userData: {
-    name?: string
-    email?: string
-    avatarUrl?: string
-  }
+  fullname: string | Blob
+  email: string | Blob
+  aboutMe: string | Blob
+  avatarUrl: string | Blob
 }

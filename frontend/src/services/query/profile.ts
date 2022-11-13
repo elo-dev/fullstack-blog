@@ -1,10 +1,10 @@
-import { api } from './index'
+import { api } from '@services/query/index'
 
-import { User } from '../../types/User'
+import { User } from '@myTypes/User'
 
 const profile = api.injectEndpoints({
   endpoints: (builder) => ({
-    getProfile: builder.query<User, string>({
+    getProfile: builder.query<User, string | undefined>({
       query: (id) => `/profile/${id}`,
       providesTags: ['Profile'],
     }),

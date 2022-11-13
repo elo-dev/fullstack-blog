@@ -3,15 +3,14 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { IoIosNotifications, IoIosArrowDown, IoIosSearch } from 'react-icons/io'
 import { CgProfile } from 'react-icons/cg'
 
-import Notifications from '../Notifications/Notifications'
+import Notifications from '@components/Notifications/Notifications'
 
-import useClickOutside from '../../hooks/useClickOutside'
+import useClickOutside from '@hooks/useClickOutside'
+import { useAppDispatch, useAppSelector } from '@hooks/index'
 
-import { fetchSearchedPosts } from '../../services/slices/posts'
-import { currentUser, logout } from '../../services/slices/userSlice'
-import { useGetNotificationQuery } from '../../services/query/user'
-
-import { useAppDispatch, useAppSelector } from '../../hooks'
+import { fetchSearchedPosts } from '@services/slices/posts'
+import { currentUser, logout } from '@services/slices/userSlice'
+import { useGetNotificationQuery } from '@services/query/user'
 
 const Header = () => {
   const [searchParams] = useSearchParams()
@@ -22,7 +21,9 @@ const Header = () => {
   const [searchTerm, setSearchTerm] = useState(term)
   const [isLoading, setIsLoading] = useState(false)
   const [submitError, setSubmitError] = useState([])
-  const [countNotification, setCountNotification] = useState(null)
+  const [countNotification, setCountNotification] = useState<
+    number | undefined
+  >(0)
 
   useEffect(() => {
     setCountNotification(user?.newNotifications.length)
@@ -56,17 +57,17 @@ const Header = () => {
 
   const openNotification = () => {
     setIsOpenNotification(!isOpenNotification)
-    setCountNotification(null)
+    setCountNotification(0)
   }
 
-  const handlerSearchPost = async (e) => {
+  const handlerSearchPost = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     try {
       setIsLoading(true)
       navigate({ pathname: '/', search: `term=${searchTerm}` })
       await dispatch(fetchSearchedPosts(searchTerm))
       setIsLoading(false)
-    } catch (error) {
+    } catch (error: any) {
       setSubmitError(error.response.data)
       setIsLoading(false)
     }

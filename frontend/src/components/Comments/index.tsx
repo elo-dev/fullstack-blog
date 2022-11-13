@@ -2,32 +2,36 @@ import { useEffect, useState } from 'react'
 
 import Comment from './Comment'
 
-import { usePostCommentsMutation } from '../../services/query/posts'
-import { PostItem } from '../../types/Post'
+import { CommentsProps } from '@components/Comments/types'
 
-const Comments = ({ _id, comments, user }: PostItem) => {
+import { usePostCommentsMutation } from '@services/query/posts'
+
+import { IComment } from '@myTypes/Post'
+import { ServerError } from '@myTypes/Error'
+
+const Comments = ({ _id, comments, user }: CommentsProps) => {
   const [commentText, setCommentText] = useState('')
-  const [comment, setComment] = useState([])
+  const [comment, setComment] = useState<IComment[] | undefined>([])
   const [addComment, { isLoading, error }] = usePostCommentsMutation()
 
   useEffect(() => {
     setComment(comments)
   }, [comments])
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     try {
       const newComment = await addComment({
         _id,
         text: commentText.trim(),
       }).unwrap()
-      setComment([...comment, newComment])
+      setComment([...(comment as IComment[]), newComment])
       setCommentText('')
     } catch (error) {}
   }
 
   const sortByNew = () => {
-    const item = [...comment]
+    const item = [...(comment as IComment[])]
     const sorted = item.sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -36,7 +40,7 @@ const Comments = ({ _id, comments, user }: PostItem) => {
   }
 
   const sortByPopular = () => {
-    const item = [...comment]
+    const item = [...(comment as IComment[])]
     const sorted = item.sort((a, b) => b.emojis.length - a.emojis.length)
     setComment(sorted)
   }
@@ -76,7 +80,7 @@ const Comments = ({ _id, comments, user }: PostItem) => {
           >
             Отправить
           </button>
-          {(error as any)?.data.map(({ message }, index) => (
+          {(error as ServerError)?.data.map(({ message }, index) => (
             <p key={index} className="text-red-500">
               {message}
             </p>
@@ -87,7 +91,7 @@ const Comments = ({ _id, comments, user }: PostItem) => {
         {comment?.map(({ _id, author, emojis, text, createdAt }) => (
           <Comment
             key={_id}
-            id={_id}
+            _id={_id}
             author={author}
             emojis={emojis}
             text={text}

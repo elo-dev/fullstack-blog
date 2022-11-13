@@ -1,8 +1,11 @@
 import { useForm } from 'react-hook-form'
 import { MdEmail, MdLock, MdPerson } from 'react-icons/md'
+import { VscLoading } from 'react-icons/vsc'
 
-import { useRegisterMutation } from '../../../services/query/user'
-import { Register } from '../../../types/Auth'
+import { useRegisterMutation } from '@services/query/user'
+
+import { Register } from '@myTypes/Auth'
+import { ServerError } from '@myTypes/Error'
 
 const RegistrationPage = () => {
   const [registerMe, { isLoading, error }] = useRegisterMutation()
@@ -46,7 +49,6 @@ const RegistrationPage = () => {
           className="absolute bottom-0 left-0 right-0 w-full border border-slate-300"
         />
         <input
-          name="fullname"
           type={'text'}
           {...register('fullname', {
             required: 'Укажите Ваше имя',
@@ -68,7 +70,6 @@ const RegistrationPage = () => {
           className="absolute bottom-0 left-0 right-0 w-full border border-slate-300"
         />
         <input
-          name="email"
           type={'email'}
           {...register('email', { required: 'Укажите почту' })}
           className="w-full border-sky-500 bg-transparent p-2 focus:border-r-4 focus:outline-none"
@@ -93,10 +94,13 @@ const RegistrationPage = () => {
         type={'submit'}
         className="w-1/4 cursor-pointer bg-sky-500 py-2 text-white hover:opacity-80 active:bg-sky-600 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80 md:w-1/2 sm:md:w-full"
       >
-        Зарегистрироваться
+        <div className="flex items-center justify-center space-x-2">
+          <p>Зарегистрироваться</p>
+          {isLoading && <VscLoading className="animate-spin" />}
+        </div>
       </button>
       <div className="mt-3">
-        {(error as any)?.data.map(({ message }: any, index) => (
+        {(error as ServerError)?.data.map(({ message }, index) => (
           <p key={index} className="text-red-500">
             {message}
           </p>

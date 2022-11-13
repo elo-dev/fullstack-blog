@@ -1,4 +1,10 @@
-const Filters = ({ onFilterPopular, onFilterNew, onFilterFriends }) => {
+import { FiltersProps } from '@components/Filters/types'
+
+const Filters = ({
+  onFilterPopular,
+  onFilterNew,
+  onFilterFriends,
+}: FiltersProps) => {
   return (
     <div className="my-10">
       <ul className="flex space-x-4 uppercase md:justify-center">

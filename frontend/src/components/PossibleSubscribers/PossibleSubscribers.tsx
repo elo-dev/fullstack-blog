@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
-
 import { CgProfile } from 'react-icons/cg'
 
-import { useGetSuggestedFriendsQuery } from '../../services/query/profile'
-import { currentUser, selectIsAuth } from '../../services/slices/userSlice'
-import { useAppSelector } from '../../hooks'
+import { useAppSelector } from '@hooks/index'
+
+import { useGetSuggestedFriendsQuery } from '@services/query/profile'
+import { currentUser, selectIsAuth } from '@services/slices/userSlice'
 
 import { PossibleSubscribersProps } from './type'
 
@@ -27,7 +27,10 @@ const PossibleSubscribers = ({
             key={_id}
             className="flex items-center justify-between space-x-3"
           >
-            <Link to={`/profile/${_id}`} className="flex items-center space-x-3">
+            <Link
+              to={`/profile/${_id}`}
+              className="flex items-center space-x-3"
+            >
               {avatarUrl ? (
                 <img
                   src={avatarUrl}

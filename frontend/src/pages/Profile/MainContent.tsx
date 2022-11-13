@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { IoIosEye } from 'react-icons/io'
 
-import { PostItem } from '../../types/Post'
-import { timeTransform } from '../../utilts/timeTransform'
+import { timeTransform } from '@utils/timeTransform'
+
+import { PostItem } from '@myTypes/Post'
 
 const MainContent = ({
   _id,

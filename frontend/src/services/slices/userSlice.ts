@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../index'
-import { AuthState } from '../../types/Auth'
+import { RootState } from '@services/index'
+import { AuthState } from '@myTypes/Auth'
 
 const initialState: AuthState = {
   user: null,

@@ -1,7 +1,8 @@
-type Message = {
-  message: string[]
-}
-
-export type Error = {
-  data: Message[]
+export type ServerError = {
+  status: string
+  data: [
+    {
+      message: string
+    }
+  ]
 }

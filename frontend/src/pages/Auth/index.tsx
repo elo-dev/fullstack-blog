@@ -1,9 +1,10 @@
 import { Navigate, Outlet } from 'react-router'
 
-import Back from '../../components/Back/Back'
+import Back from '@components/Back/Back'
 
-import { useAppSelector } from '../../hooks'
-import { currentUser } from '../../services/slices/userSlice'
+import { useAppSelector } from '@hooks/index'
+
+import { currentUser } from '@services/slices/userSlice'
 
 const Auth = () => {
   const { user } = useAppSelector(currentUser)

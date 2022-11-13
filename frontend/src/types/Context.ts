@@ -1,4 +1,4 @@
-import { User } from './User'
+import { User } from '@myTypes/User'
 
 export type ContextType = {
   profile: User

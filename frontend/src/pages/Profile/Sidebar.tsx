@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { CgProfile } from 'react-icons/cg'
+import { VscLoading } from 'react-icons/vsc'
 
-import PossibleSubscribers from '../../components/PossibleSubscribers/PossibleSubscribers'
+import PossibleSubscribers from '@components/PossibleSubscribers/PossibleSubscribers'
 
 import { SidebarProps } from './type'
 
@@ -14,6 +15,8 @@ const Sidebar = ({
   isLoadingFollow,
   isLoadingUnfollow,
 }: SidebarProps) => {
+  if (!userProfile) return <Navigate to={'/'} />
+
   return (
     <>
       <div className="space-y-4 rounded-md bg-white p-5 text-center shadow-md">
@@ -54,7 +57,10 @@ const Sidebar = ({
                 className="w-full rounded-md bg-sky-500 py-2 text-white hover:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-500"
                 disabled={isLoadingFollow}
               >
-                Подписаться
+                <div className="flex items-center justify-center space-x-2">
+                  <p>Подписаться</p>
+                  {isLoadingFollow && <VscLoading className="animate-spin" />}
+                </div>
               </button>
             )
           ) : (
@@ -63,7 +69,10 @@ const Sidebar = ({
               className="w-full rounded-md bg-sky-500 py-2 text-white hover:opacity-80 disabled:bg-gray-500"
               disabled={isLoadingUnfollow}
             >
-              Отписаться
+              <div className="flex items-center justify-center space-x-2">
+                <p>Отписаться</p>
+                {isLoadingUnfollow && <VscLoading className="animate-spin" />}
+              </div>
             </button>
           ))}
       </div>

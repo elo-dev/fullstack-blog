@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { api } from './query'
-import { postReducer } from './slices/posts'
-import { userReducer } from './slices/userSlice'
+import { api } from '@services/query/index'
+import { postReducer } from '@services/slices/posts'
+import { userReducer } from '@services/slices/userSlice'
 
 const store = configureStore({
   reducer: {

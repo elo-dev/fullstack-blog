@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
 import { MdImageNotSupported } from 'react-icons/md'
 
-import { Notification } from './type'
+import { NotificationProps } from './type'
 
-const Notifications = ({ setIsOpenNotification, notifications }) => {
+const Notifications = ({
+  setIsOpenNotification,
+  notifications,
+}: NotificationProps) => {
   return (
     <>
       <h2 className="mb-4">Ваши уведомления</h2>
@@ -14,9 +17,9 @@ const Notifications = ({ setIsOpenNotification, notifications }) => {
       )}
       <div
         className="flex-col space-y-4 overflow-hidden"
-        onClick={() => setIsOpenNotification((prev) => !prev)}
+        onClick={() => setIsOpenNotification((prev: any) => !prev)}
       >
-        {notifications.map((item: Notification, index) => (
+        {notifications.map((item, index) => (
           <div
             key={index}
             className="flex items-center space-x-3 rounded-sm bg-gray-200 p-2 md:space-x-2"

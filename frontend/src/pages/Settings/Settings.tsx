@@ -5,20 +5,23 @@ import { IoMdCamera } from 'react-icons/io'
 import { CgProfile } from 'react-icons/cg'
 import { VscLoading } from 'react-icons/vsc'
 
-import Back from '../../components/Back/Back'
+import Back from '@components/Back/Back'
 
-import { useAppSelector } from '../../hooks'
-import { useUpdateMeMutation } from '../../services/query/user'
-import { currentUser } from '../../services/slices/userSlice'
+import { useAppSelector } from '@hooks/index'
+
+import { useUpdateMeMutation } from '@services/query/user'
+import { currentUser } from '@services/slices/userSlice'
+import { Update } from '@myTypes/Auth'
+import { ServerError } from '@myTypes/Error'
 
 const Settings = () => {
   const { user } = useAppSelector(currentUser)
   const [updateMe, { isLoading, error }] = useUpdateMeMutation()
 
-  const [preview, setPreview] = useState(null)
+  const [preview, setPreview] = useState('')
   const [imageUrl, setImageUrl] = useState(null)
 
-  const { handleSubmit, register, reset } = useForm({
+  const { handleSubmit, register, reset } = useForm<Update>({
     defaultValues: {
       fullname: '',
       email: '',
@@ -28,31 +31,36 @@ const Settings = () => {
   })
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const file: any = e.target.files[0]
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setPreview(reader.result as string)
+    if (e.target.files) {
+      const file: any = e.target.files[0]
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+      setImageUrl(file)
     }
-    reader.readAsDataURL(file)
-    setImageUrl(file)
   }
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: Update) => {
     try {
-      const { fullname, email, aboutMe } = values
-      const userData: any = new FormData()
+      const { aboutMe, email, fullname } = values
+      const userData = new FormData()
 
-      userData.append('fullname', fullname || user?.fullname)
-      userData.append('email', email || user?.email)
-      userData.append('aboutMe', aboutMe || user?.aboutMe)
-      if (imageUrl || user?.avatarUrl) {
-        userData.append('avatarUrl', imageUrl || user?.avatarUrl)
+      if (user) {
+        userData.append('id', user._id)
+        userData.append('fullname', fullname || user.fullname)
+        userData.append('email', email || user.email)
+        userData.append('aboutMe', aboutMe || user.aboutMe)
+        if (imageUrl || user.avatarUrl) {
+          userData.append('avatarUrl', imageUrl || user.avatarUrl)
+        }
+
+        if (!fullname && !email && !aboutMe && !imageUrl) return
+
+        await updateMe({ id: user?._id, userData }).unwrap()
+        reset()
       }
-
-      if (!fullname && !email && !aboutMe && !imageUrl) return
-
-      await updateMe({ id: user?._id, userData }).unwrap()
-      reset()
     } catch (error) {}
   }
 
@@ -98,21 +106,18 @@ const Settings = () => {
             </label>
           </div>
           <input
-            name="fullname"
             {...register('fullname')}
             type={'text'}
             placeholder="Имя"
             className="mx-auto block rounded-md border border-sky-500 px-3 py-1 outline-none md:w-[250px]"
           />
           <input
-            name="email"
             {...register('email')}
             type={'email'}
             placeholder="Почта"
             className="mx-auto block rounded-md border border-sky-500 px-3 py-1 outline-none md:w-[250px]"
           />
           <input
-            name="aboutMe"
             {...register('aboutMe')}
             type={'text'}
             placeholder="О себе"
@@ -128,7 +133,7 @@ const Settings = () => {
               {isLoading && <VscLoading className="animate-spin" />}
             </div>
           </button>
-          {(error as any)?.data.map(({ message }, index) => (
+          {(error as ServerError)?.data.map(({ message }, index) => (
             <p key={index} className="text-red-500">
               {message}
             </p>

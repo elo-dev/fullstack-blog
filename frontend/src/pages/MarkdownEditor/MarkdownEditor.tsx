@@ -1,30 +1,23 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router'
 import MDEditor from 'react-simplemde-editor'
 import { VscLoading } from 'react-icons/vsc'
 
-import Back from '../../components/Back/Back'
-import Loader from '../../components/Loader/Loader'
+import Back from '@components/Back/Back'
+import Loader from '@components/Loader/Loader'
 
 import { instance } from '../../instance'
 
-import { PostItem } from '../../types/Post'
+import { useAppSelector } from '@hooks/index'
 
-import { useAppSelector } from '../../hooks'
-import { selectIsAuth } from '../../services/slices/userSlice'
+import { selectIsAuth } from '@services/slices/userSlice'
 import {
   useAddNewPostMutation,
   usePatchPostMutation,
-} from '../../services/query/posts'
+} from '@services/query/posts'
 
-import { Me } from '../../types/User'
+import { PostItem } from '@myTypes/Post'
+import { Me } from '@myTypes/User'
 
 import 'easymde/dist/easymde.min.css'
 
@@ -33,19 +26,20 @@ const MarkdownEditor = () => {
   const navigation = useNavigate()
   const { pathname } = useLocation()
 
-  const [addNewPost] = useAddNewPostMutation()
-  const [patchPost] = usePatchPostMutation()
+  const [addNewPost, { isLoading: isAddNewPostLoading }] =
+    useAddNewPostMutation()
+  const [patchPost, { isLoading: isPatchPostLoading }] = usePatchPostMutation()
   const isAuth = useAppSelector(selectIsAuth)
 
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
-  const [tags, setTags] = useState('')
+  const [tags, setTags] = useState<string | undefined>('')
   const [imageUrl, setImageUrl] = useState('')
-  const [preview, setPreview] = useState(null)
+  const [preview, setPreview] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [submitError, setSubmitError] = useState([])
   const [isSuccess, setIsSuccess] = useState(false)
-  const inputFileRef = useRef(null)
+  const inputFileRef = useRef<HTMLButtonElement & HTMLInputElement>(null)
 
   const isEditing = Boolean(id)
 
@@ -75,28 +69,32 @@ const MarkdownEditor = () => {
     setText(value)
   }, [])
 
-  const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const file: any = e.target.files[0]
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setPreview(reader.result as string)
+  const handleChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file: any = e.target.files[0]
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+      setImageUrl(file)
     }
-    reader.readAsDataURL(file)
-    setImageUrl(file)
   }
 
   const onClickRemoveImage = () => {
-    setPreview(null)
+    setPreview('')
     setImageUrl('')
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault()
       const formData = new FormData()
       formData.append('title', title.trim())
       formData.append('text', text.trim())
-      formData.append('tags', tags)
+      if (tags) {
+        formData.append('tags', tags)
+      }
       formData.append('imageUrl', imageUrl)
 
       isEditing
@@ -104,16 +102,14 @@ const MarkdownEditor = () => {
         : await addNewPost({ formData }).unwrap()
 
       setIsSuccess(true)
-      setPreview(null)
+      setPreview('')
       setImageUrl('')
-      setIsLoading(false)
       setTags('')
       setText('')
       setTitle('')
       setSubmitError([])
-    } catch (error) {
+    } catch (error: any) {
       setSubmitError(error.data)
-      setIsLoading(false)
     }
   }
 
@@ -148,7 +144,7 @@ const MarkdownEditor = () => {
         <div className="flex space-x-5">
           <button
             type={'button'}
-            onClick={() => inputFileRef.current.click()}
+            onClick={() => inputFileRef.current?.click()}
             className="rounded-sm border border-sky-500 px-5 py-2 font-medium text-sky-500 hover:border-sky-700 hover:text-sky-700 active:opacity-70"
           >
             Загрузить превью
@@ -195,13 +191,15 @@ const MarkdownEditor = () => {
         </div>
         <MDEditor value={text} onChange={onChange} options={options} />
         <button
-          disabled={isLoading}
+          disabled={isAddNewPostLoading || isPatchPostLoading}
           type={'submit'}
           className="rounded-sm bg-sky-500 px-5 py-2 text-white hover:opacity-80 active:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80"
         >
           <div className="flex items-center space-x-2">
             <p>{isEditing ? 'Сохранить' : 'Опубликовать'}</p>
-            {isLoading && <VscLoading className="animate-spin" />}
+            {(isAddNewPostLoading || isPatchPostLoading) && (
+              <VscLoading className="animate-spin" />
+            )}
           </div>
         </button>
         <div className="mt-3">

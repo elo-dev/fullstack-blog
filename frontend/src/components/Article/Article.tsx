@@ -4,9 +4,9 @@ import { IoIosEye } from 'react-icons/io'
 import { MdDelete, MdEdit } from 'react-icons/md'
 import { CgProfile } from 'react-icons/cg'
 
-import { PostItem } from '../../types/Post'
+import { timeTransform } from '@utils/timeTransform'
 
-import { timeTransform } from '../../utilts/timeTransform'
+import { ArticleProps } from '@components/Article/type'
 
 const Article = ({
   _id,
@@ -19,14 +19,14 @@ const Article = ({
   viewsCount,
   isEditable,
   onRemoveArticle,
-}: PostItem) => {
+}: ArticleProps) => {
   const { createdDate, isCreatedToday, todayTime } = timeTransform(createdAt)
 
   return (
     <div key={_id} className="overflow-hidden rounded-t-lg bg-white">
       <img
-        src={imageUrl ? imageUrl : null}
-        alt={imageUrl ? title : null}
+        src={imageUrl ? imageUrl : ''}
+        alt={imageUrl ? title : ''}
         className="max-h-[450px] w-full object-cover"
       />
       <div className="py-5">
