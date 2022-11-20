@@ -126,10 +126,6 @@ const MarkdownEditor = () => {
       spellChecker: false,
       autofocus: true,
       placeholder: 'Введите текст...',
-      autosave: {
-        enabled: true,
-        delay: 1000,
-      },
     }),
     []
   )
@@ -179,21 +175,26 @@ const MarkdownEditor = () => {
             onChange={(e) => setTitle(e.target.value)}
             type="text"
             placeholder="Заголовок статьи..."
-            className="bg-transparent py-3 text-3xl font-bold placeholder-sky-500 placeholder:font-bold focus:outline-none"
+            className="bg-transparent py-3 text-3xl font-bold placeholder-sky-500 placeholder:font-bold focus:outline-none dark:text-neutral-300"
           />
           <input
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             type="text"
             placeholder="Теги через пробел"
-            className="border-b border-slate-500 bg-transparent pb-1 placeholder-sky-500 placeholder:font-medium focus:outline-none"
+            className="border-b border-slate-500 bg-transparent pb-1 placeholder-sky-500 placeholder:font-medium focus:outline-none dark:text-neutral-300"
           />
         </div>
-        <MDEditor value={text} onChange={onChange} options={options} />
+        <MDEditor
+          className="rounded-md dark:bg-slate-200"
+          value={text}
+          onChange={onChange}
+          options={options}
+        />
         <button
           disabled={isAddNewPostLoading || isPatchPostLoading}
           type={'submit'}
-          className="rounded-sm bg-sky-500 px-5 py-2 text-white hover:opacity-80 active:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80"
+          className="rounded-sm bg-sky-500 px-5 py-2 text-white hover:opacity-80 active:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:opacity-80 dark:mt-4"
         >
           <div className="flex items-center space-x-2">
             <p>{isEditing ? 'Сохранить' : 'Опубликовать'}</p>

@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { IoIosNotifications, IoIosArrowDown, IoIosSearch } from 'react-icons/io'
 import { CgProfile } from 'react-icons/cg'
+import { MdDarkMode } from 'react-icons/md'
+
+import NotFound from '@pages/NotFound/NotFound'
 
 import Notifications from '@components/Notifications/Notifications'
 
@@ -12,6 +15,8 @@ import { fetchSearchedPosts } from '@services/slices/posts'
 import { currentUser, logout } from '@services/slices/userSlice'
 import { useGetNotificationQuery } from '@services/query/user'
 
+import { ServerError } from '@myTypes/Error'
+
 const Header = () => {
   const [searchParams] = useSearchParams()
   const term = searchParams.get('term') || ''
@@ -20,10 +25,33 @@ const Header = () => {
 
   const [searchTerm, setSearchTerm] = useState(term)
   const [isLoading, setIsLoading] = useState(false)
-  const [submitError, setSubmitError] = useState([])
+  const [submitError, setSubmitError] = useState<ServerError | null>(null)
   const [countNotification, setCountNotification] = useState<
     number | undefined
   >(0)
+  const [themeMode, setThemeMode] = useState(
+    localStorage.getItem('theme') || 'light'
+  )
+
+  useEffect(() => {
+    if (themeMode === 'dark') {
+      document.body.classList.add('dark')
+      document.body.classList.remove('light')
+    } else {
+      document.body.classList.remove('dark')
+      document.body.classList.add('light')
+    }
+  }, [themeMode])
+
+  const handleSwithTheme = () => {
+    if (themeMode === 'light') {
+      setThemeMode('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      setThemeMode('light')
+      localStorage.setItem('theme', 'light')
+    }
+  }
 
   useEffect(() => {
     setCountNotification(user?.newNotifications.length)
@@ -73,6 +101,8 @@ const Header = () => {
     }
   }
 
+  if (submitError) return <NotFound error={submitError} />
+
   return (
     <div className="flex items-center justify-between py-5 md:flex-col md:space-y-5">
       <form
@@ -89,9 +119,6 @@ const Header = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
-      {submitError?.map(({ message }, index) => (
-        <p key={index}>{message}</p>
-      ))}
       <div className="flex items-center space-x-3">
         {user ? (
           <>
@@ -108,46 +135,55 @@ const Header = () => {
             <div className="flex items-center space-x-1">
               <Link
                 to={`profile/${user._id}`}
-                className="max-w-[100px] cursor-pointer truncate hover:text-sky-500"
+                className="max-w-[100px] cursor-pointer truncate hover:text-sky-500 dark:text-neutral-300 dark:hover:text-sky-500"
               >
                 {user?.fullname}
               </Link>
               <nav className="relative" ref={rootElMenu}>
                 <IoIosArrowDown
-                  onClick={() => setIsOpenMenu(!isOpenMenu)}
-                  className="cursor-pointer hover:text-sky-500"
+                  onClick={() => setIsOpenMenu((prev) => !prev)}
+                  className="cursor-pointer hover:text-sky-500 dark:text-neutral-300 dark:hover:text-sky-500"
                 />
                 <ul
-                  className={`absolute right-[-30px] top-8 rounded-md bg-white p-2 drop-shadow-lg transition-all duration-300 ease-in-out ${
+                  className={`absolute right-[-30px] top-8 rounded-md bg-white p-2 drop-shadow-lg transition-all duration-300 ease-in-out dark:bg-gray-200 ${
                     isOpenMenu ? 'visible opacity-100' : 'invisible opacity-0'
                   }`}
                 >
                   <Link
                     to={'create-post'}
-                    className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500"
+                    className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500 dark:hover:bg-slate-200"
                     onClick={() => setIsOpenMenu((prevState) => !prevState)}
                   >
                     Создать статью
                   </Link>
                   <Link
                     to="settings"
-                    className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500"
+                    className="flex cursor-pointer items-center justify-center whitespace-nowrap px-2 py-1 hover:bg-slate-100 hover:text-sky-500 dark:hover:bg-slate-200"
                   >
                     Настройки
                   </Link>
                   <li
                     onClick={onClickLogout}
-                    className="flex cursor-pointer items-center justify-center px-2 py-1 hover:bg-slate-100 hover:text-red-500"
+                    className="flex cursor-pointer items-center justify-center px-2 py-1 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-200"
                   >
                     Выйти
                   </li>
                 </ul>
               </nav>
             </div>
+            <div>
+              <MdDarkMode
+                size="25"
+                className={`cursor-pointer ${
+                  themeMode === 'dark' && 'fill-yellow-500'
+                }  transition-colors duration-200 ease-in-out`}
+                onClick={handleSwithTheme}
+              />
+            </div>
             <div className="relative" ref={rootElNotification}>
               <IoIosNotifications
                 size="25"
-                className="cursor-pointer hover:text-sky-500"
+                className="cursor-pointer hover:text-sky-500 dark:text-neutral-300 dark:hover:text-sky-500"
                 onClick={openNotification}
               />
               {!!countNotification && (
@@ -156,7 +192,7 @@ const Header = () => {
                 </span>
               )}
               <div
-                className={`absolute right-0 top-10 z-50 h-[400px] w-[350px] overflow-auto rounded-md bg-white p-4 drop-shadow-lg transition-all duration-300 ease-in-out md:h-[350px] md:w-[300px] md:translate-x-[15%] ${
+                className={`absolute right-0 top-10 z-50 h-[400px] w-[350px] overflow-auto rounded-md bg-white p-4 drop-shadow-lg transition-all duration-300 ease-in-out dark:bg-gray-100 md:h-[350px] md:w-[300px] md:translate-x-[15%] ${
                   isOpenNotification
                     ? 'visible opacity-100'
                     : 'invisible opacity-0'
@@ -178,7 +214,7 @@ const Header = () => {
           <>
             <Link
               to={'auth'}
-              className="rounded-md border border-sky-500 px-2 py-1 hover:text-sky-500"
+              className="rounded-md border border-sky-500 px-2 py-1 hover:text-sky-500 dark:text-neutral-300"
             >
               Войти
             </Link>

@@ -47,7 +47,7 @@ const UserList = ({
         >
           {fullname}
         </Link>
-        <p className="truncate text-sm text-gray-500 sm:max-w-[85%]">
+        <p className="truncate text-sm text-slate-500 sm:max-w-[85%] dark:text-slate-600">
           {aboutMe}
         </p>
         <BsThreeDots

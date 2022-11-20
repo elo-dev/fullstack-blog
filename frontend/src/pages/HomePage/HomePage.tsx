@@ -86,10 +86,14 @@ const HomePage = () => {
         onFilterPopular={onFilterPopular}
         onFilterFriends={onFilterFriends}
       />
-      <h1 className="text-8xl font-semibold md:text-7xl">The Blog</h1>
+      <h1 className="text-8xl font-semibold dark:text-neutral-300 md:text-7xl">
+        The Blog
+      </h1>
       {!posts?.length ? (
         <div className="grid h-[calc(100vh-285px)] items-center justify-center md:h-[calc(100vh-315px)]">
-          <p className="text-xl font-bold sm:text-base">Нет постов</p>
+          <p className="text-xl font-bold dark:text-neutral-300 sm:text-base">
+            Нет постов
+          </p>
         </div>
       ) : (
         <div className="my-12 grid grid-cols-3 gap-x-10 gap-y-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

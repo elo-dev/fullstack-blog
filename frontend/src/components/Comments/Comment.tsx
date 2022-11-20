@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import EmojiPicker, { IEmojiData } from 'emoji-picker-react'
+import EmojiPicker, { Theme, EmojiClickData } from 'emoji-picker-react'
 import { GrEmoji } from 'react-icons/gr'
 import { CgProfile } from 'react-icons/cg'
 
@@ -28,12 +28,18 @@ const Comment = ({ _id, author, emojis, text, createdAt }: IComment) => {
     setEmoji(emojiCount)
   }, [])
 
-  const onEmojiClick = async (event: any, emojiObject: IEmojiData) => {
+  const onEmojiClick = async (
+    emojiObject: EmojiClickData,
+    event: MouseEvent
+  ) => {
     try {
-      const { data } = await instance.patch<IEmojiData[]>('/comment/emoji', {
-        id: _id,
-        emoji: emojiObject.emoji,
-      })
+      const { data } = await instance.patch<EmojiClickData[]>(
+        '/comment/emoji',
+        {
+          id: _id,
+          emoji: emojiObject.emoji,
+        }
+      )
 
       const emojiCount = data.reduce((acc: any, el) => {
         acc[el.emoji] = (acc[el.emoji] || 0) + 1
@@ -41,13 +47,14 @@ const Comment = ({ _id, author, emojis, text, createdAt }: IComment) => {
       }, {})
 
       setEmoji(emojiCount)
+      setIsOpen(false)
     } catch (error) {
       console.log(error)
     }
   }
 
   return (
-    <div className="space-y-3 border-b border-slate-400 pb-2">
+    <div className="space-y-3 py-5 last:pb-0">
       <Link
         to={`/profile/${author._id}`}
         className="inline-flex items-center space-x-2"
@@ -59,33 +66,45 @@ const Comment = ({ _id, author, emojis, text, createdAt }: IComment) => {
             className="h-10 w-10 rounded-full object-cover"
           />
         ) : (
-          <CgProfile className="h-10 w-10 rounded-full text-black" />
+          <CgProfile className="h-10 w-10 rounded-full text-black dark:text-neutral-300" />
         )}
-        <p>{author.fullname}</p>
+        <p className="dark:text-neutral-300">{author.fullname}</p>
       </Link>
-      <p>{text}</p>
+      <p className="dark:text-neutral-300">{text}</p>
       <div className="relative flex items-center space-x-3">
         {isAuth && (
-          <p ref={rootEl} onClick={() => setIsOpen(!isOpen)}>
-            <GrEmoji size={20} className="cursor-pointer hover:text-sky-500" />
-          </p>
-        )}
-        {isOpen && (
-          <div className="light-0 absolute bottom-[100%]">
-            <EmojiPicker
-              onEmojiClick={onEmojiClick}
-              disableSkinTonePicker
-              disableSearchBar
+          <div ref={rootEl}>
+            <GrEmoji
+              size={20}
+              className="cursor-pointer hover:text-sky-500 dark:text-neutral-300 dark:hover:text-sky-500"
+              onClick={() => setIsOpen((prev) => !prev)}
             />
+            <div
+              className={`light-0 absolute bottom-[100%] transition-all duration-300 ease-in-out ${
+                isOpen ? 'visible opacity-100' : 'invisible opacity-0'
+              }`}
+            >
+              <EmojiPicker
+                theme={
+                  localStorage.getItem('theme')?.includes('dark')
+                    ? Theme.DARK
+                    : Theme.LIGHT
+                }
+                searchDisabled
+                skinTonesDisabled
+                lazyLoadEmojis
+                onEmojiClick={onEmojiClick}
+              />
+            </div>
           </div>
         )}
         {Object.entries(emoji).map(([item, val], index) => (
           <p
             key={index}
-            className="text-sm text-gray-600"
+            className="text-sm text-gray-600 dark:text-neutral-300"
           >{`${item} ${val}`}</p>
         ))}
-        <p className="opacity-40">
+        <p className="opacity-40 dark:text-neutral-200">
           {new Date(createdAt).toLocaleString('ru', {
             day: '2-digit',
             month: '2-digit',

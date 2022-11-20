@@ -19,7 +19,7 @@ const Sidebar = ({
 
   return (
     <>
-      <div className="space-y-4 rounded-md bg-white p-5 text-center shadow-md">
+      <div className="space-y-4 rounded-md bg-white p-5 text-center shadow-md dark:bg-opacity-90">
         {userProfile.avatarUrl ? (
           <img
             src={userProfile.avatarUrl}
@@ -33,20 +33,20 @@ const Sidebar = ({
         {userProfile.aboutMe && (
           <p className="line-clamp-2">{userProfile.aboutMe}</p>
         )}
-        <div className="grid grid-cols-2 divide-x">
+        <div className="grid grid-cols-2 divide-x dark:divide-slate-300">
           <Link
             to={'subscriptions'}
             onClick={() => scrollRef.current.scrollIntoView()}
           >
             <p>{userProfile.following.length}</p>
-            <p className="text-gray-400">Подписки</p>
+            <p className="text-slate-400 dark:text-slate-500">Подписки</p>
           </Link>
           <Link
             to={'followers'}
             onClick={() => scrollRef.current.scrollIntoView()}
           >
             <p>{userProfile.followers.length}</p>
-            <p className="text-gray-400">Подписчики</p>
+            <p className="text-slate-400 dark:text-slate-500">Подписчики</p>
           </Link>
         </div>
         {authUser &&

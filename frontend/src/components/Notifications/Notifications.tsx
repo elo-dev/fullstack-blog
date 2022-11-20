@@ -22,7 +22,7 @@ const Notifications = ({
         {notifications.map((item, index) => (
           <div
             key={index}
-            className="flex items-center space-x-3 rounded-sm bg-gray-200 p-2 md:space-x-2"
+            className="flex items-center space-x-3 rounded-md bg-slate-200 p-2 dark:bg-slate-300 md:space-x-2"
           >
             <div className="basis-1/4 md:basis-1/2">
               {item.avatarUrl ? (

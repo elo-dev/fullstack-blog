@@ -11,11 +11,13 @@ const NotFound = ({ error }: ErrorProps) => {
         {error.status}
       </h1>
       {error.data.map(({ message }, index) => (
-        <p key={index}>{message}</p>
+        <p key={index} className="dark:text-neutral-300">
+          {message}
+        </p>
       ))}
       <button
         onClick={() => navigate('/')}
-        className="rounded-md border border-sky-500 px-5 py-2 hover:bg-sky-500 hover:text-white active:border-sky-700 active:bg-sky-700"
+        className="rounded-md border border-sky-500 px-5 py-2 hover:bg-sky-500 hover:text-white active:border-sky-700 active:bg-sky-700 dark:text-neutral-300"
       >
         Главная
       </button>

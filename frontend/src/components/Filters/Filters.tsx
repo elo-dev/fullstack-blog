@@ -10,19 +10,19 @@ const Filters = ({
       <ul className="flex space-x-4 uppercase md:justify-center">
         <li
           onClick={onFilterNew}
-          className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline"
+          className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline dark:text-neutral-300 dark:hover:text-sky-500"
         >
           новые
         </li>
         <li
           onClick={onFilterPopular}
-          className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline"
+          className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline dark:text-neutral-300 dark:hover:text-sky-500"
         >
           популярные
         </li>
         <li
           onClick={onFilterFriends}
-          className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline"
+          className="cursor-pointer font-medium underline-offset-8 hover:text-sky-500 hover:underline dark:text-neutral-300 dark:hover:text-sky-500"
         >
           Друзья
         </li>

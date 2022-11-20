@@ -18,7 +18,7 @@ const MainContent = ({
   const { createdDate, isCreatedToday, todayTime } = timeTransform(createdAt)
 
   return (
-    <div className="flex flex-col space-y-4 rounded-md bg-white p-5 shadow-md">
+    <div className="flex flex-col space-y-4 rounded-md bg-white p-5 shadow-md dark:bg-opacity-90">
       <div className="flex items-center space-x-2">
         <img
           src={author.avatarUrl}
@@ -45,7 +45,7 @@ const MainContent = ({
             className="h-[200px] w-full rounded-md object-cover"
           />
         ) : null}
-        <div className="flex items-center space-x-4 text-sm text-slate-400">
+        <div className="flex items-center space-x-4 text-sm text-slate-400 dark:text-slate-500">
           <div className="flex items-center space-x-1">
             <IoIosEye />
             <span>{viewsCount}</span>
@@ -54,7 +54,7 @@ const MainContent = ({
             {tags?.tag?.map((tag, index) => (
               <li
                 key={index}
-                className="mr-2 inline-block font-medium text-slate-400"
+                className="mr-2 inline-block font-medium text-slate-400 dark:text-slate-500"
               >
                 #{tag}
               </li>

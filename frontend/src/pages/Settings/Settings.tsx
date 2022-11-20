@@ -70,7 +70,9 @@ const Settings = () => {
     <>
       <div className="flex items-center space-x-4 md:justify-between">
         <Back />
-        <h1 className="text-5xl font-semibold md:text-4xl">Settings</h1>
+        <h1 className="text-5xl font-semibold dark:text-neutral-300 md:text-4xl">
+          Settings
+        </h1>
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}

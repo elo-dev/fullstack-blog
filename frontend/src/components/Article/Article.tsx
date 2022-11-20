@@ -23,7 +23,10 @@ const Article = ({
   const { createdDate, isCreatedToday, todayTime } = timeTransform(createdAt)
 
   return (
-    <div key={_id} className="overflow-hidden rounded-t-lg bg-white">
+    <div
+      key={_id}
+      className="overflow-hidden rounded-t-lg bg-white dark:bg-opacity-90"
+    >
       <img
         src={imageUrl ? imageUrl : ''}
         alt={imageUrl ? title : ''}
@@ -45,7 +48,7 @@ const Article = ({
           )}
           <div>
             <p>{author.fullname}</p>
-            <p className="text-slate-400">
+            <p className="text-slate-400 dark:text-slate-500">
               {isCreatedToday ? todayTime : createdDate}
             </p>
           </div>
@@ -57,7 +60,7 @@ const Article = ({
               {tags?.tag?.map((item, index) => (
                 <li
                   key={index}
-                  className="mr-2 inline-block text-slate-400 last:mr-0"
+                  className="mr-2 inline-block text-slate-400 last:mr-0 dark:text-slate-500"
                 >
                   #{item}
                 </li>
@@ -67,7 +70,7 @@ const Article = ({
               children={text}
               className="my-5 font-medium text-slate-500"
             />
-            <p className="flex items-center space-x-1 text-slate-400">
+            <p className="flex items-center space-x-1 text-slate-400 dark:text-slate-500">
               <IoIosEye />
               <span>{viewsCount}</span>
             </p>

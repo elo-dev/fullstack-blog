@@ -19,7 +19,7 @@ const PossibleSubscribers = ({
   const isAuth = useAppSelector(selectIsAuth)
 
   return (
-    <div className="h-fit space-y-5 overflow-auto rounded-md bg-white p-5 shadow-md xl:max-h-56">
+    <div className="h-fit space-y-5 overflow-auto rounded-md bg-white p-5 shadow-md dark:bg-opacity-90 xl:max-h-56">
       <p>Возможные подписки</p>
       {isAuth &&
         suggestFriends?.map(({ _id, avatarUrl, fullname }) => (

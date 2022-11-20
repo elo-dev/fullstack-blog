@@ -48,14 +48,19 @@ const Comments = ({ _id, comments, user }: CommentsProps) => {
   return (
     <div className="my-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-medium">Комментарии</h2>
+        <h2 className="text-2xl font-medium dark:text-neutral-300">
+          Комментарии
+        </h2>
         <div className="flex space-x-3">
-          <p onClick={sortByNew} className="cursor-pointer hover:text-sky-500">
+          <p
+            onClick={sortByNew}
+            className="cursor-pointer hover:text-sky-500 dark:text-neutral-300 dark:hover:text-sky-500"
+          >
             Последние
           </p>
           <p
             onClick={sortByPopular}
-            className="cursor-pointer hover:text-sky-500"
+            className="cursor-pointer hover:text-sky-500 dark:text-neutral-300 dark:hover:text-sky-500"
           >
             Популярные
           </p>
@@ -75,8 +80,12 @@ const Comments = ({ _id, comments, user }: CommentsProps) => {
           />
           <button
             type={'submit'}
-            disabled={!commentText.length || isLoading}
-            className="rounded-md border border-sky-500 bg-sky-500 p-2 text-white hover:opacity-90 active:bg-sky-600 disabled:cursor-not-allowed disabled:bg-slate-400"
+            disabled={
+              !commentText.length ||
+              isLoading ||
+              !Boolean(commentText.trimStart())
+            }
+            className="rounded-md border border-sky-500 bg-sky-500 p-2 text-white hover:opacity-90 active:bg-sky-600 disabled:cursor-not-allowed disabled:bg-slate-400 dark:disabled:border-gray-500 dark:disabled:bg-gray-400"
           >
             Отправить
           </button>
@@ -87,7 +96,7 @@ const Comments = ({ _id, comments, user }: CommentsProps) => {
           ))}
         </form>
       )}
-      <div className="space-y-5">
+      <div className="divide-y divide-slate-400 dark:divide-slate-300">
         {comment?.map(({ _id, author, emojis, text, createdAt }) => (
           <Comment
             key={_id}

@@ -15,8 +15,8 @@ const FollowersList = () => {
   )
 
   return (
-    <div className="rounded-md bg-white shadow-md">
-      <form className="flex items-center border-b border-gray-200">
+    <div className="rounded-md bg-white shadow-md dark:bg-opacity-90">
+      <form className="flex items-center border-b border-gray-200 dark:border-slate-300">
         <FiSearch size="25" className="mx-3" />
         <input
           type="text"
@@ -29,7 +29,7 @@ const FollowersList = () => {
       {!profile.followers.length ? (
         <p className="py-5 text-center">Нет подписок</p>
       ) : filtredUsers.length ? (
-        <ul className="mx-5 divide-y">
+        <ul className="mx-5 divide-y dark:divide-slate-300">
           {filtredUsers.map(({ _id, fullname, avatarUrl, aboutMe }) => (
             <UserList
               key={_id}
