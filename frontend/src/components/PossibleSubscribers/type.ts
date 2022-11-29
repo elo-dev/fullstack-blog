@@ -1,6 +1,8 @@
+import { User } from '@myTypes/User'
+
 export type PossibleSubscribersProps = {
-  handleFollow: (_id: string) => void
-  handleUnfollow: (_id: string) => void
+  handleFollow: (user: User) => void
   isLoadingFollow: boolean
-  isLoadingUnfollow: boolean
+  suggestFriends?: User[]
+  isAuth: boolean
 }

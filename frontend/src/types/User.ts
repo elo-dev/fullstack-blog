@@ -10,8 +10,8 @@ export interface User {
   newNotifications: Notification[]
   notifications: Notification[]
   posts: PostItem[]
-  followers: User[] & string[]
-  following: User[] & string[]
+  followers: User[]
+  following: User[]
   aboutMe: string
 }
 

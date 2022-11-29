@@ -13,11 +13,21 @@ const userSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload
     },
+    setFollow: (state, action) => {
+      state.user?.following.push(action.payload)
+    },
+    setUnfollow: (state, action) => {
+      if (state.user) {
+        state.user.following = state.user.following.filter(
+          (user) => user._id !== action.payload
+        )
+      }
+    },
     logout: () => initialState,
   },
 })
 
-export const { logout, setUser } = userSlice.actions
+export const { logout, setUser, setFollow, setUnfollow } = userSlice.actions
 
 export const userReducer = userSlice.reducer
 

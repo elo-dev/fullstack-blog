@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Outlet, useParams } from 'react-router'
+import { Navigate, Outlet, useParams } from 'react-router'
 
 import RecommendsTags from '@pages/Profile/RecommendsTags'
 import Sidebar from '@pages/Profile/Sidebar'
@@ -9,43 +9,50 @@ import Back from '@components/Back/Back'
 import Loader from '@components/Loader/Loader'
 import PossibleSubscribers from '@components/PossibleSubscribers/PossibleSubscribers'
 
-import { useAppSelector } from '@hooks/index'
+import { useAppDispatch, useAppSelector } from '@hooks/index'
 
 import {
   useFollowMutation,
   useGetProfileQuery,
+  useGetSuggestedFriendsQuery,
   useUnfollowMutation,
 } from '@services/query/profile'
-import { currentUser, selectIsAuth } from '@services/slices/userSlice'
+import {
+  currentUser,
+  selectIsAuth,
+  setFollow,
+  setUnfollow,
+} from '@services/slices/userSlice'
 import { ServerError } from '@myTypes/Error'
+import { User } from '@myTypes/User'
 
 const ProfileLayout = () => {
   const { id } = useParams()
   const { data: profile, isLoading, error } = useGetProfileQuery(id)
+  const { data: suggestFriends } = useGetSuggestedFriendsQuery()
+
   const isAuth = useAppSelector(selectIsAuth)
   const { user } = useAppSelector(currentUser)
+
   const scrollRef = useRef<HTMLDivElement | null>(null)
+
   const [follow, { isLoading: isLoadingFollow }] = useFollowMutation()
   const [unfollow, { isLoading: isLoadingUnfollow }] = useUnfollowMutation()
+  const dispatch = useAppDispatch()
 
-  const handleFollow = async (id?: string) => {
-    if (id) {
-      await follow(id).unwrap()
-    } else {
-      await follow(profile?._id).unwrap()
-    }
+  const handleFollow = async (userProfile: User) => {
+    await follow(userProfile._id).unwrap()
+    dispatch(setFollow(userProfile))
   }
 
-  const handleUnfollow = async (id?: string) => {
-    if (id) {
-      await unfollow(id).unwrap()
-    } else {
-      await unfollow(profile?._id).unwrap()
-    }
+  const handleUnfollow = async (id: string) => {
+    await unfollow(id).unwrap()
+    dispatch(setUnfollow(id))
   }
 
   if (isLoading) return <Loader />
   if (error) return <NotFound error={error as ServerError} />
+  if (!profile) return <Navigate to={'/'} />
 
   return (
     <>
@@ -60,6 +67,8 @@ const ProfileLayout = () => {
             handleUnfollow={handleUnfollow}
             isLoadingFollow={isLoadingFollow}
             isLoadingUnfollow={isLoadingUnfollow}
+            isAuth={isAuth}
+            suggestFriends={suggestFriends}
           />
         </div>
         <div
@@ -74,9 +83,9 @@ const ProfileLayout = () => {
         <div className="col-span-1 hidden lg:block">
           <PossibleSubscribers
             handleFollow={handleFollow}
-            handleUnfollow={handleUnfollow}
             isLoadingFollow={isLoadingFollow}
-            isLoadingUnfollow={isLoadingUnfollow}
+            suggestFriends={suggestFriends}
+            isAuth={isAuth}
           />
         </div>
       </div>

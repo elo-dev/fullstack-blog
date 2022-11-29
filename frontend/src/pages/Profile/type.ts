@@ -4,8 +4,10 @@ export type SidebarProps = {
   userProfile?: User | null
   authUser?: User | null
   scrollRef: any
-  handleFollow: (_id?: string) => void
-  handleUnfollow: (_id?: string) => void
+  handleFollow: (user: User) => void
+  handleUnfollow: (_id: string) => void
   isLoadingFollow: boolean
   isLoadingUnfollow: boolean
+  suggestFriends?: User[]
+  isAuth: boolean
 }

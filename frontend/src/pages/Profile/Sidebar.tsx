@@ -1,4 +1,4 @@
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { CgProfile } from 'react-icons/cg'
 import { VscLoading } from 'react-icons/vsc'
 
@@ -14,9 +14,10 @@ const Sidebar = ({
   handleUnfollow,
   isLoadingFollow,
   isLoadingUnfollow,
+  suggestFriends,
+  isAuth,
 }: SidebarProps) => {
-  if (!userProfile) return <Navigate to={'/'} />
-
+  if (!userProfile) return <VscLoading className="animate-spin" />
   return (
     <>
       <div className="space-y-4 rounded-md bg-white p-5 text-center shadow-md dark:bg-opacity-90">
@@ -49,40 +50,41 @@ const Sidebar = ({
             <p className="text-slate-400 dark:text-slate-500">Подписчики</p>
           </Link>
         </div>
-        {authUser &&
-          (!authUser?.following?.includes(userProfile?._id) ? (
-            authUser?._id !== userProfile?._id && (
-              <button
-                onClick={() => handleFollow()}
-                className="w-full rounded-md bg-sky-500 py-2 text-white hover:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-500"
-                disabled={isLoadingFollow}
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <p>Подписаться</p>
-                  {isLoadingFollow && <VscLoading className="animate-spin" />}
-                </div>
-              </button>
-            )
-          ) : (
+        {!authUser?.following.some((item) => item._id === userProfile._id) ? (
+          authUser?._id !== userProfile._id && (
             <button
-              onClick={() => handleUnfollow()}
-              className="w-full rounded-md bg-sky-500 py-2 text-white hover:opacity-80 disabled:bg-gray-500"
-              disabled={isLoadingUnfollow}
+              onClick={() => handleFollow(userProfile)}
+              className="w-full rounded-md bg-sky-500 py-2 text-white hover:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-500"
+              disabled={isLoadingFollow}
             >
               <div className="flex items-center justify-center space-x-2">
-                <p>Отписаться</p>
-                {isLoadingUnfollow && <VscLoading className="animate-spin" />}
+                <p>Подписаться</p>
+                {isLoadingFollow && <VscLoading className="animate-spin" />}
               </div>
             </button>
-          ))}
+          )
+        ) : (
+          <button
+            onClick={() => handleUnfollow(userProfile._id)}
+            className="w-full rounded-md bg-sky-500 py-2 text-white hover:opacity-80 disabled:bg-gray-500"
+            disabled={isLoadingUnfollow}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <p>Отписаться</p>
+              {isLoadingUnfollow && <VscLoading className="animate-spin" />}
+            </div>
+          </button>
+        )}
       </div>
       <div className="lg:hidden">
-        <PossibleSubscribers
-          handleFollow={handleFollow}
-          handleUnfollow={handleUnfollow}
-          isLoadingFollow={isLoadingFollow}
-          isLoadingUnfollow={isLoadingUnfollow}
-        />
+        {suggestFriends && (
+          <PossibleSubscribers
+            handleFollow={handleFollow}
+            isLoadingFollow={isLoadingFollow}
+            suggestFriends={suggestFriends}
+            isAuth={isAuth}
+          />
+        )}
       </div>
     </>
   )

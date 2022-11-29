@@ -1,5 +1,4 @@
 import { api } from '@services/query/index'
-
 import { User } from '@myTypes/User'
 
 const profile = api.injectEndpoints({
